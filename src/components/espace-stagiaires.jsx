@@ -3228,7 +3228,7 @@ function TraineeRulesAckView({ traineeId, dk, t, traineeName, group, birthDate }
   if (ack === undefined) return <LoadingBlock t={t} />;
 
   async function handleDownload() {
-    const dir = (LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr";
+    const dir = ack.signedLang === "fr" || !ack.lang ? "ltr" : ((LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr");
     const el = buildSignedRulesElement({
       traineeName, group, birthDate,
       signedAt: ack.signedAt,
