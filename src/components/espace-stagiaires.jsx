@@ -1479,10 +1479,15 @@ function LoginFlow({ onLogin }) {
                 label={t("trainerPinLabel")}
                 value={trainerPin}
                 onChange={(e) => setTrainerPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !busy) handleTrainerSubmit();
+                }}
                 inputMode="numeric"
                 type="password"
                 autoComplete="off"
+                autoFocus
               />
+
               {error && (
                 <div className="flex items-center gap-2 mb-1 text-sm" style={{ color: COLORS.danger }}>
                   <AlertCircle size={16} /> {error}
