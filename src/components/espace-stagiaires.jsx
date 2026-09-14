@@ -1574,9 +1574,11 @@ function LoginFlow({ onLogin }) {
         const next = [...idx, rec];
         await sSet("trainees_index", next);
 
-        const rulesText = getRulesTextForLang(lang);
+        // The legally binding signed version is always the French text,
+        // whatever language the trainee read it in.
+        const rulesText = getRulesTextForLang("fr");
         const signedAt = Date.now();
-        await saveSignedRulesAck(rec.id, dk, { lang, rulesText, signatureDataUrl, signedAt });
+        await saveSignedRulesAck(rec.id, dk, { lang, readLang: lang, signedLang: "fr", rulesText, signatureDataUrl, signedAt });
 
         setBusy(false);
         onLogin({ type: "trainee", ...rec, dk });
