@@ -648,6 +648,366 @@ Done at Laon. By signing this document, you acknowledge that you have read, unde
 فيما يخص ملفات الأجر، يتحمل المتدرب مسؤولية الوثائق المسلَّمة للمركز ويجب عليه إثبات صحتها.
 
 حُرِّر في لاون. بتوقيعك على هذا المستند، تقرّ بأنك قرأت وفهمت ووافقت على كامل هذا النظام الداخلي.`,
+
+  tr: `HAKLARINIZ VE YÜKÜMLÜLÜKLERİNİZ
+
+CFP02'ye stajyer olarak kayıt olmak, çalışma saatleri, mekân ve ekipman kullanımı, stajyer temsili ve yaptırımlar hakkındaki hükümleri belirleyen bu iç yönetmeliğin kayıtsız şartsız kabul edildiği anlamına gelir.
+
+Madde 1: Bu yönetmelik Fransız İş Kanunu'nun L6352-3, L6352-4, R6352-1 – R6352-15 maddelerine uygun olarak hazırlanmıştır ve eğitim süresi boyunca tüm stajyerlere uygulanır.
+
+Madde 2 — Saatler: Her stajyerin programı eğitim sözleşmesine göre referans eğitmen tarafından belirlenir. Devamsızlık halinde ilk yarım gün içinde CFP02'ye haber verilmeli, hastalık halinde 48 saat içinde rapor sunulmalıdır. Haksız devamsızlıklar finansörlere bildirilir ve ödenekten kesinti yapılabilir.
+
+Madde 3 — Sağlık, hijyen ve güvenlik: Uygun kıyafet giyilmesi beklenir. İzinsiz duvara afiş asmak, fotokopi makinesini kişisel amaçla kullanmak yasaktır. Binada sigara/elektronik sigara içmek yasaktır (otoparkta izinlidir). Eğitim salonlarında yiyip içmek yasaktır.
+
+Madde 4 — Alkol ve uyuşturucu: Yasa dışı veya bağımlılık yapan maddelerin (uyuşturucu, alkol, ilaç…) getirilmesi ve kullanılması yasaktır.
+
+Madde 5 — Yemek: Laon'da mikrodalga, su ısıtıcı, buzdolabı ve lavabolu bir mutfak; diğer merkezlerde mikrodalga ve lavabo bulunur. Kullanımdan sonra temizlik stajyerin sorumluluğundadır.
+
+Madde 6 — Sıhhi tesisler: Engelli erişimi dâhil yeterli tesis sunulur; temiz bırakılması beklenir.
+
+Madde 7 — Güvenlik: Bina video ile izlenir. GDPR (AB 2016/679) uyarınca toplanan veriler yalnızca CFP02 tarafından kullanılır, üçüncü taraflarla paylaşılmaz; erişim, düzeltme ve silme talepleri cfp02@cfp02.info adresine yapılır. CFP02 kişisel eşyaların kaybından sorumlu değildir. Güvenlik ve tahliye talimatları okunmalı, tehlikeler derhal bildirilmelidir. İş kazaları 24 saat içinde bildirilmelidir.
+
+Madde 8 — Ekipman: Ekipman ve belgeler özenle kullanılmalı, yerine bırakılmalıdır. Bilgisayarlar yalnızca eğitim amaçlı kullanılır.
+
+Madde 9 — Cep telefonu: Eğitim salonlarında telefon kullanımı yasaktır; sessize alınmalıdır.
+
+Madde 10 — Ücretsiz eğitim: Eğitim stajyer için ücretsizdir; finansman kamu kurumları tarafından sağlanır.
+
+Madde 11 — Yaptırımlar: Yönetmeliğe aykırı davranışlar uyarı, kınama veya eğitimden kesin çıkarma ile sonuçlanabilir.
+
+Madde 12 — Savunma hakkı: Hiçbir yaptırım, stajyere gerekçeler bildirilip açıklama yapma imkânı verilmeden uygulanamaz.
+
+Madde 13 — Temsil: Stajyer grupları, mevzuata uygun olarak temsilci seçer.
+
+Madde 14 — Temsilcilerin görevi: Temsilciler eğitim süresince seçilir; eğitimin işleyişine dair öneri ve şikâyetleri iletir.
+
+Madde 15 — Ücret dosyaları: Stajyer, merkeze teslim ettiği belgelerin doğruluğundan sorumludur.
+
+Laon'da düzenlenmiştir. Bu belgeyi imzalayarak bu iç yönetmeliğin tamamını okuduğunuzu, anladığınızı ve kabul ettiğinizi beyan edersiniz.`,
+
+  es: `SUS DERECHOS Y DEBERES
+
+La incorporación de un(a) alumno(a) al CFP02 implica la aceptación sin reservas de este reglamento, que fija, conforme a la ley, las disposiciones sobre horarios, uso de los locales y del material, representación de los alumnos y sanciones.
+
+Artículo 1: Este reglamento se establece conforme a los artículos L6352-3, L6352-4 y R6352-1 a R6352-15 del Código del Trabajo francés y se aplica a todos los alumnos durante toda la formación.
+
+Artículo 2 — Horarios: El formador de referencia fija el horario según el contrato de formación. En caso de ausencia hay que avisar al CFP02 durante la primera media jornada y, si es por enfermedad, presentar un justificante médico en 48 horas. Las ausencias injustificadas se comunican al financiador y pueden implicar una deducción proporcional de la remuneración.
+
+Artículo 3 — Salud, higiene y seguridad: Se pide vestimenta adecuada. Prohibido colocar carteles sin autorización y usar la fotocopiadora con fines personales. Prohibido fumar o vapear en el interior (permitido en el aparcamiento). Prohibido comer y beber en las aulas.
+
+Artículo 4 — Alcohol y drogas: Prohibido introducir o consumir sustancias ilícitas o adictivas (drogas, alcohol, medicamentos…).
+
+Artículo 5 — Comidas: En Laon, cocina con microondas, hervidor, nevera y fregadero; en otros centros, microondas y fregadero. Hay que limpiar el material y el espacio después de usarlos.
+
+Artículo 6 — Sanitarios: Se ponen a disposición sanitarios suficientes, incluidos accesibles, que deben dejarse limpios.
+
+Artículo 7 — Seguridad: El edificio está videovigilado. Conforme al RGPD (UE 2016/679), los datos recogidos son de uso exclusivo del CFP02 y no se comunican a terceros; acceso, rectificación y supresión en cfp02@cfp02.info. El CFP02 no se responsabiliza de robos o pérdidas de objetos personales. Deben leerse las instrucciones de seguridad y evacuación y señalar de inmediato cualquier peligro. Los accidentes de trabajo se declaran en 24 horas.
+
+Artículo 8 — Material: El material y los documentos deben usarse con cuidado y devolverse a su lugar. Los ordenadores se usan solo con fines formativos.
+
+Artículo 9 — Teléfono móvil: Prohibido su uso en las aulas; debe estar silenciado.
+
+Artículo 10 — Gratuidad: La formación es gratuita para el alumno; la financian organismos públicos.
+
+Artículo 11 — Sanciones: El incumplimiento puede dar lugar a advertencia, apercibimiento o exclusión definitiva de la formación.
+
+Artículo 12 — Derecho de defensa: Ninguna sanción se aplica sin informar al alumno de los motivos y permitirle explicarse.
+
+Artículo 13 — Representación: Los grupos de alumnos eligen delegados conforme a la normativa.
+
+Artículo 14 — Función de los delegados: Elegidos por la duración de la formación, transmiten sugerencias y reclamaciones sobre higiene, seguridad y aplicación del reglamento.
+
+Artículo 15 — Expedientes de remuneración: El alumno es responsable de la autenticidad de los documentos entregados al centro.
+
+Hecho en Laon. Al firmar este documento reconoce haber leído, comprendido y aceptado la totalidad de este reglamento interno.`,
+
+  pt: `OS SEUS DIREITOS E DEVERES
+
+A entrada de um(a) formando(a) no CFP02 implica a aceitação sem reservas deste regulamento, que fixa, em conformidade com a lei, as disposições relativas a horários, utilização das instalações e do material, representação dos formandos e sanções.
+
+Artigo 1: Este regulamento é estabelecido de acordo com os artigos L6352-3, L6352-4 e R6352-1 a R6352-15 do Código do Trabalho francês e aplica-se a todos os formandos durante toda a formação.
+
+Artigo 2 — Horários: O formador de referência define o horário conforme o contrato de formação. Em caso de ausência, avisar o CFP02 na primeira meia jornada e, em caso de doença, apresentar atestado em 48 horas. As ausências injustificadas são comunicadas ao financiador e podem originar dedução proporcional da remuneração.
+
+Artigo 3 — Saúde, higiene e segurança: Pede-se vestuário adequado. Proibido afixar cartazes sem autorização e usar a fotocopiadora para fins pessoais. Proibido fumar ou vapear no interior (permitido no estacionamento). Proibido comer e beber nas salas de formação.
+
+Artigo 4 — Álcool e drogas: Proibido introduzir ou consumir substâncias ilícitas ou aditivas (drogas, álcool, medicamentos…).
+
+Artigo 5 — Refeições: Em Laon, cozinha com micro-ondas, chaleira, frigorífico e lava-louça; nos outros locais, micro-ondas e lava-louça. É obrigatório limpar o material e o espaço após a utilização.
+
+Artigo 6 — Instalações sanitárias: São disponibilizadas instalações suficientes, incluindo acessíveis, que devem ser deixadas limpas.
+
+Artigo 7 — Segurança: O edifício é videovigiado. Nos termos do RGPD (UE 2016/679), os dados recolhidos são de uso exclusivo do CFP02 e não são comunicados a terceiros; acesso, retificação e apagamento através de cfp02@cfp02.info. O CFP02 não se responsabiliza por roubo ou perda de bens pessoais. As instruções de segurança e evacuação devem ser lidas e qualquer perigo comunicado de imediato. Os acidentes de trabalho devem ser declarados em 24 horas.
+
+Artigo 8 — Material: O material e os documentos devem ser usados com cuidado e arrumados. Os computadores destinam-se apenas à formação.
+
+Artigo 9 — Telemóvel: Proibido usar nas salas de formação; deve estar silenciado.
+
+Artigo 10 — Gratuidade: A formação é gratuita para o formando, financiada por organismos públicos.
+
+Artigo 11 — Sanções: O incumprimento pode dar lugar a advertência, repreensão ou exclusão definitiva da formação.
+
+Artigo 12 — Direito de defesa: Nenhuma sanção é aplicada sem informar o formando dos motivos e permitir-lhe explicar-se.
+
+Artigo 13 — Representação: Os grupos de formandos elegem delegados conforme a regulamentação.
+
+Artigo 14 — Papel dos delegados: Eleitos pela duração da formação, transmitem sugestões e reclamações sobre higiene, segurança e aplicação do regulamento.
+
+Artigo 15 — Processos de remuneração: O formando é responsável pela autenticidade dos documentos entregues ao centro.
+
+Feito em Laon. Ao assinar este documento, reconhece ter lido, compreendido e aceite a totalidade deste regulamento interno.`,
+
+  ru: `ВАШИ ПРАВА И ОБЯЗАННОСТИ
+
+Зачисление стажёра в CFP02 означает безоговорочное принятие настоящих правил, которые в соответствии с законом определяют режим занятий, использование помещений и оборудования, представительство стажёров и взыскания.
+
+Статья 1: Правила составлены в соответствии со статьями L6352-3, L6352-4 и R6352-1 – R6352-15 Трудового кодекса Франции и применяются ко всем стажёрам на весь период обучения.
+
+Статья 2 — Расписание: Расписание устанавливает наставник согласно договору об обучении. При отсутствии необходимо предупредить CFP02 в первую половину дня, при болезни — предоставить справку в течение 48 часов. О неоправданных пропусках сообщается финансирующему органу; возможен пропорциональный вычет из пособия.
+
+Статья 3 — Здоровье, гигиена и безопасность: Требуется подобающая одежда. Запрещено размещать объявления без разрешения и использовать копировальный аппарат в личных целях. Курение и вейпинг в помещениях запрещены (разрешено на парковке). Есть и пить в учебных залах запрещено.
+
+Статья 4 — Алкоголь и наркотики: Запрещено приносить и употреблять запрещённые или вызывающие зависимость вещества (наркотики, алкоголь, медикаменты…).
+
+Статья 5 — Питание: В Лаоне есть кухня с микроволновкой, чайником, холодильником и мойкой; на других площадках — микроволновка и мойка. После использования нужно всё убрать.
+
+Статья 6 — Санитарные помещения: Предоставляются в достаточном количестве, включая доступные для людей с инвалидностью; их следует оставлять чистыми.
+
+Статья 7 — Безопасность: Здание находится под видеонаблюдением. Согласно GDPR (ЕС 2016/679) собранные данные используются только CFP02 и не передаются третьим лицам; доступ, исправление и удаление — через cfp02@cfp02.info. CFP02 не отвечает за кражу или утрату личных вещей. Необходимо ознакомиться с инструкциями по безопасности и эвакуации и немедленно сообщать об опасности. О несчастных случаях сообщается в течение 24 часов.
+
+Статья 8 — Оборудование: Использовать бережно и возвращать на место. Компьютеры — только для учебных целей.
+
+Статья 9 — Мобильный телефон: В учебных залах пользоваться запрещено; телефон должен быть беззвучным.
+
+Статья 10 — Бесплатность: Обучение бесплатно для стажёра и финансируется государственными органами.
+
+Статья 11 — Взыскания: Нарушение правил может привести к предупреждению, выговору или окончательному исключению.
+
+Статья 12 — Право на защиту: Взыскание не применяется без объяснения причин стажёру и возможности высказаться.
+
+Статья 13 — Представительство: Группы стажёров избирают делегатов в соответствии с нормами.
+
+Статья 14 — Роль делегатов: Избираются на срок обучения, передают предложения и жалобы по гигиене, безопасности и применению правил.
+
+Статья 15 — Документы по оплате: Стажёр отвечает за подлинность переданных центру документов.
+
+Составлено в Лаоне. Подписывая этот документ, вы подтверждаете, что прочитали, поняли и приняли настоящие внутренние правила полностью.`,
+
+  uk: `ВАШІ ПРАВА ТА ОБОВ'ЯЗКИ
+
+Зарахування стажера до CFP02 означає беззастережне прийняття цих правил, які відповідно до закону визначають розклад, користування приміщеннями та обладнанням, представництво стажерів і стягнення.
+
+Стаття 1: Правила укладені відповідно до статей L6352-3, L6352-4 та R6352-1 – R6352-15 Трудового кодексу Франції і застосовуються до всіх стажерів упродовж навчання.
+
+Стаття 2 — Розклад: Розклад визначає наставник згідно з договором про навчання. У разі відсутності потрібно повідомити CFP02 у першу половину дня, у разі хвороби — надати довідку протягом 48 годин. Про невиправдані пропуски повідомляють фінансувальника; можливе пропорційне зменшення виплати.
+
+Стаття 3 — Здоров'я, гігієна та безпека: Потрібен належний одяг. Заборонено розміщувати оголошення без дозволу та використовувати копіювальний апарат в особистих цілях. Курити й вейпити в приміщенні заборонено (дозволено на парковці). Їсти та пити в навчальних залах заборонено.
+
+Стаття 4 — Алкоголь і наркотики: Заборонено приносити чи вживати заборонені або залежність-викликаючі речовини (наркотики, алкоголь, медикаменти…).
+
+Стаття 5 — Харчування: У Лані є кухня з мікрохвильовкою, чайником, холодильником і мийкою; на інших майданчиках — мікрохвильовка та мийка. Після використання потрібно прибрати.
+
+Стаття 6 — Санітарні приміщення: Надаються в достатній кількості, зокрема доступні; їх слід залишати чистими.
+
+Стаття 7 — Безпека: Будівля під відеоспостереженням. Згідно з GDPR (ЄС 2016/679) зібрані дані використовує лише CFP02 і не передає третім особам; доступ, виправлення та видалення — через cfp02@cfp02.info. CFP02 не відповідає за кражу чи втрату особистих речей. Треба ознайомитися з інструкціями з безпеки та евакуації і негайно повідомляти про небезпеку. Про нещасні випадки повідомляють протягом 24 годин.
+
+Стаття 8 — Обладнання: Користуватися обережно та повертати на місце. Комп'ютери — лише для навчання.
+
+Стаття 9 — Мобільний телефон: У навчальних залах користуватися заборонено; телефон має бути беззвучним.
+
+Стаття 10 — Безоплатність: Навчання безоплатне для стажера, фінансується державними органами.
+
+Стаття 11 — Стягнення: Порушення правил може призвести до попередження, зауваження або остаточного виключення.
+
+Стаття 12 — Право на захист: Стягнення не застосовують без пояснення причин і можливості висловитися.
+
+Стаття 13 — Представництво: Групи стажерів обирають делегатів відповідно до норм.
+
+Стаття 14 — Роль делегатів: Обираються на строк навчання, передають пропозиції та скарги щодо гігієни, безпеки й застосування правил.
+
+Стаття 15 — Документи щодо оплати: Стажер відповідає за достовірність документів, переданих центру.
+
+Складено в Лані. Підписуючи цей документ, ви підтверджуєте, що прочитали, зрозуміли та прийняли ці внутрішні правила повністю.`,
+
+  fa: `حقوق و وظایف شما
+
+ثبت‌نام کارآموز در CFP02 به معنای پذیرش بی‌قید و شرط این آیین‌نامه است که بر اساس قانون، ساعات کار، استفاده از فضا و تجهیزات، نمایندگی کارآموزان و مجازات‌ها را تعیین می‌کند.
+
+ماده ۱: این آیین‌نامه بر پایه مواد L6352-3، L6352-4 و R6352-1 تا R6352-15 قانون کار فرانسه تنظیم شده و در تمام مدت آموزش برای همه کارآموزان اجرا می‌شود.
+
+ماده ۲ — ساعات: برنامه هر کارآموز توسط مربی مرجع و بر اساس قرارداد آموزشی تعیین می‌شود. در صورت غیبت باید در نیمه اول روز به CFP02 اطلاع داد و در صورت بیماری تا ۴۸ ساعت گواهی پزشکی ارائه کرد. غیبت بدون دلیل به نهاد تأمین‌کننده اعلام می‌شود و ممکن است باعث کسر متناسب کمک‌هزینه شود.
+
+ماده ۳ — بهداشت و ایمنی: پوشش مناسب لازم است. نصب اعلامیه بدون اجازه و استفاده شخصی از دستگاه کپی ممنوع است. سیگار و ویپ در ساختمان ممنوع (در پارکینگ مجاز) است. خوردن و آشامیدن در کلاس‌ها ممنوع است.
+
+ماده ۴ — الکل و مواد مخدر: آوردن یا مصرف مواد غیرقانونی و اعتیادآور (مواد مخدر، الکل، دارو…) ممنوع است.
+
+ماده ۵ — غذا: در لائون آشپزخانه‌ای با مایکروویو، کتری، یخچال و سینک؛ در سایر مراکز مایکروویو و سینک وجود دارد. پس از استفاده، نظافت بر عهده کارآموز است.
+
+ماده ۶ — سرویس‌های بهداشتی: به اندازه کافی، شامل دسترس‌پذیر برای معلولان، فراهم است و باید پاکیزه رها شود.
+
+ماده ۷ — امنیت: ساختمان دارای دوربین مداربسته است. بر اساس GDPR (اتحادیه اروپا ۲۰۱۶/۶۷۹) داده‌ها فقط توسط CFP02 استفاده می‌شود و به شخص ثالث داده نمی‌شود؛ دسترسی، اصلاح و حذف از طریق cfp02@cfp02.info. CFP02 مسئول دزدی یا گم شدن وسایل شخصی نیست. دستورهای ایمنی و تخلیه باید خوانده شود و هر خطر فوراً اطلاع داده شود. حوادث کار باید در ۲۴ ساعت اعلام شود.
+
+ماده ۸ — تجهیزات: با دقت استفاده و سر جای خود گذاشته شود. رایانه‌ها فقط برای آموزش است.
+
+ماده ۹ — تلفن همراه: استفاده در کلاس ممنوع است و باید بی‌صدا باشد.
+
+ماده ۱۰ — رایگان بودن: آموزش برای کارآموز رایگان است و نهادهای عمومی آن را تأمین می‌کنند.
+
+ماده ۱۱ — مجازات‌ها: تخلف می‌تواند به اخطار، تذکر کتبی یا اخراج قطعی منجر شود.
+
+ماده ۱۲ — حق دفاع: هیچ مجازاتی بدون اعلام دلایل و فرصت توضیح اعمال نمی‌شود.
+
+ماده ۱۳ — نمایندگی: گروه‌های کارآموز بر اساس مقررات نماینده انتخاب می‌کنند.
+
+ماده ۱۴ — نقش نمایندگان: برای مدت آموزش انتخاب می‌شوند و پیشنهادها و شکایات مربوط به بهداشت، ایمنی و اجرای آیین‌نامه را منتقل می‌کنند.
+
+ماده ۱۵ — پرونده‌های کمک‌هزینه: کارآموز مسئول درستی مدارک تحویل‌داده‌شده به مرکز است.
+
+تنظیم‌شده در لائون. با امضای این سند تأیید می‌کنید که تمام این آیین‌نامه داخلی را خوانده، فهمیده و پذیرفته‌اید.`,
+
+  prs: `حقوق او مکلفیتونه
+
+په CFP02 کې د یو کارآموز شمولیت د دې کورني مقررات بې قید منل معنی لري، چې د قانون سره سم ساعتونه، د ودانۍ او تجهیزاتو کارول، د کارآموزانو استازیتوب او جزاوې ټاکي.
+
+ماده ۱: دا مقررات د فرانسې د کار قانون د L6352-3، L6352-4 او R6352-1 تر R6352-15 موادو سره سم جوړ شوي او د ټولې روزنې په موده کې پر ټولو کارآموزانو تطبیق کیږي.
+
+ماده ۲ — ساعتونه: د هر کارآموز مهال ویش د مرجع ښوونکي لخوا د روزنې قرارداد له مخې ټاکل کیږي. د غیر حاضرۍ په صورت کې باید د ورځې په لومړۍ نیمایي کې CFP02 خبر شي او د ناروغۍ په حالت کې تر ۴۸ ساعتونو پورې طبي سند وړاندې شي. بې دلیله غیر حاضري تمویل کوونکي ته خبر ورکول کیږي او د مرستې تناسبي کمښت رامنځته کولی شي.
+
+ماده ۳ — روغتیا، پاکوالی او امنیت: مناسب لباس اړین دی. د اجازې پرته پر دیوالونو اعلان لګول او د کاپي ماشین شخصي کارول منع دي. په ودانۍ کې سګرټ او ویپ منع (په پارکینګ کې جواز لري). په روزنیزو کوټو کې خوړل او څښل منع دي.
+
+ماده ۴ — الکول او نشه یې توکي: غیر قانوني یا اعتیاد راوستونکي مواد (نشه یې توکي، الکول، درمل…) راوستل او کارول منع دي.
+
+ماده ۵ — خواړه: په لاون کې پخلنځی د مایکروویف، کیتلي، یخچال او سینک سره؛ په نورو مرکزونو کې مایکروویف او سینک. له کارولو وروسته پاکوالی د کارآموز مسؤولیت دی.
+
+ماده ۶ — تشنابونه: کافي، په شمول د معلولینو لپاره لاسرسي وړ، برابر دي او باید پاک پریښودل شي.
+
+ماده ۷ — امنیت: ودانۍ د کمرې تر څارنې لاندې ده. د GDPR (اروپايي اتحادیه ۲۰۱۶/۶۷۹) له مخې ټول معلومات یوازې CFP02 کاروي او دریمې خوا ته نه سپارل کیږي؛ لاسرسی، سمون او له منځه وړل د cfp02@cfp02.info له لارې. CFP02 د شخصي شیانو د غلا یا ورکېدو مسؤولیت نه لري. د امنیت او تخلیې لارښوونې باید ولوستل شي او هر خطر سمدلاسه راپور شي. کاري پېښې باید په ۲۴ ساعتونو کې اعلان شي.
+
+ماده ۸ — تجهیزات: په احتیاط وکارول شي او خپل ځای ته وګرځول شي. کمپیوټرونه یوازې د روزنې لپاره دي.
+
+ماده ۹ — موبایل: په روزنیزو کوټو کې کارول منع دي؛ باید بې غږه وي.
+
+ماده ۱۰ — وړیا والی: روزنه د کارآموز لپاره وړیا ده او عامه ادارې یې تمویل کوي.
+
+ماده ۱۱ — جزاوې: سرغړونه کولی شي خبرداری، لیکلې نیوکه یا له روزنې قطعي اخراج ولري.
+
+ماده ۱۲ — د دفاع حق: هیڅ جزا د دلایلو د خبرولو او د توضیح فرصت پرته نه تطبیق کیږي.
+
+ماده ۱۳ — استازیتوب: د کارآموزانو ډلې د مقرراتو سره سم استازي ټاکي.
+
+ماده ۱۴ — د استازو رول: د روزنې د مودې لپاره ټاکل کیږي او د پاکوالي، امنیت او د مقرراتو د تطبیق په اړه وړاندیزونه او شکایتونه لیږدوي.
+
+ماده ۱۵ — د مرستې دوسیې: کارآموز د مرکز ته سپارل شویو اسنادو د صحت مسؤول دی.
+
+په لاون کې ترتیب شو. د دې سند په لاسلیک کولو تاسو مني چې دا ټول کورني مقررات مو لوستلي، پوه شوي او منلي دي.`,
+
+  ku: `مافەکان و ئەرکەکانی تۆ
+
+تۆمارکردنی فێرخواز لە CFP02 بە پەسەندکردنی بێ مەرجی ئەم ڕێسانە دادەنرێت، کە بەپێی یاسا کاتەکان، بەکارهێنانی شوێن و ئامێرەکان، نوێنەرایەتی فێرخوازان و سزاکان دیاری دەکەن.
+
+بەند ١: ئەم ڕێسانە بەپێی بەندەکانی L6352-3، L6352-4 و R6352-1 بۆ R6352-15 ی یاسای کاری فەرەنسا دانراوە و بۆ هەموو فێرخوازان بە درێژایی خولی فێرکاری جێبەجێ دەکرێت.
+
+بەند ٢ — کاتەکان: خشتەی هەر فێرخوازێک لەلایەن ڕاهێنەری سەرەکی و بەپێی گرێبەستی فێرکاری دیاری دەکرێت. لە کاتی نەهاتن دەبێت لە نیوەی یەکەمی ڕۆژدا CFP02 ئاگادار بکرێت و لە کاتی نەخۆشی بەڵگەنامەی پزیشکی لە ٤٨ کاتژمێردا پێشکەش بکرێت. نەهاتنی بێ بەڵگە بە دابینکەر ڕادەگەیەنرێت و دەکرێت بەشێک لە پارەدان کەم بکرێتەوە.
+
+بەند ٣ — تەندروستی، پاکوخاوێنی و سەلامەتی: جلوبەرگی گونجاو پێویستە. هەڵواسینی ئاگادارکردنەوە بەبێ مۆڵەت و بەکارهێنانی کەسی ئامێری کۆپی قەدەغەیە. جگەرەکێشان و ڤیپ لە ناو بیناکە قەدەغەیە (لە پارکینگ ڕێگەپێدراوە). خواردن و خواردنەوە لە هۆڵەکانی فێرکاری قەدەغەیە.
+
+بەند ٤ — کحول و مادە هۆشبەرەکان: هێنان یان بەکارهێنانی مادەی نایاسایی و ڕاهێنەر (مادەی هۆشبەر، کحول، دەرمان…) قەدەغەیە.
+
+بەند ٥ — خواردن: لە لاون چێشتخانەیەک بە مایکرۆوەیڤ، کەتلی، ساردکەرەوە و دەستشۆر؛ لە شوێنەکانی تر مایکرۆوەیڤ و دەستشۆر. دوای بەکارهێنان پاککردنەوە ئەرکی فێرخوازە.
+
+بەند ٦ — ئاودەستەکان: بە ژمارەی پێویست، بە ناوبردنی گونجاو بۆ کەم‌ئەندامان، دابین کراون و دەبێت پاک بەجێ بهێڵدرێن.
+
+بەند ٧ — ئاسایش: بیناکە بە کامێرا چاودێری دەکرێت. بەپێی GDPR (یەکێتیی ئەوروپا ٢٠١٦/٦٧٩) داتاکان تەنها لەلایەن CFP02 بەکاردەهێنرێن و بە لای سێیەم نادرێن؛ دەستپێگەیشتن، ڕاستکردنەوە و سڕینەوە لە ڕێگەی cfp02@cfp02.info. CFP02 بەرپرس نییە بۆ دزین یان لەدەستدانی کەلوپەلی کەسی. ڕێنماییەکانی سەلامەتی و بەتاڵکردن دەبێت بخوێنرێن و هەر مەترسییەک دەستبەجێ ڕابگەیەنرێت. ڕووداوی کار دەبێت لە ٢٤ کاتژمێردا ڕابگەیەنرێت.
+
+بەند ٨ — ئامێرەکان: بە ئاگایی بەکاربهێنرێن و بۆ شوێنی خۆیان بگەڕێنرێنەوە. کۆمپیوتەرەکان تەنها بۆ فێرکارین.
+
+بەند ٩ — مۆبایل: بەکارهێنانی لە هۆڵەکانی فێرکاری قەدەغەیە؛ دەبێت بێدەنگ بێت.
+
+بەند ١٠ — بەخۆڕایی: فێرکاری بۆ فێرخواز بەخۆڕاییە و لەلایەن دەزگاکانی گشتی دابین دەکرێت.
+
+بەند ١١ — سزاکان: پێشێلکاری دەکرێت بە ئاگادارکردنەوە، سەرنجی نووسراو یان دەرکردنی کۆتایی لە فێرکاری کۆتایی بێت.
+
+بەند ١٢ — مافی بەرگری: هیچ سزایەک بەبێ ئاگادارکردنی هۆکارەکان و دانی دەرفەتی ڕوونکردنەوە جێبەجێ نەکرێت.
+
+بەند ١٣ — نوێنەرایەتی: گرووپەکانی فێرخوازان بەپێی ڕێسا نوێنەر هەڵدەبژێرن.
+
+بەند ١٤ — ڕۆڵی نوێنەران: بۆ ماوەی فێرکاری هەڵدەبژێرن و پێشنیار و سکاڵاکان دەربارەی پاکوخاوێنی، سەلامەتی و جێبەجێکردنی ڕێساکان دەگەیەنن.
+
+بەند ١٥ — دۆسیەی پارەدان: فێرخواز بەرپرسیارە لە ڕاستی ئەو بەڵگەنامانەی بە سەنتەر دەدرێن.
+
+لە لاون ئامادە کراوە. بە واژووکردنی ئەم بەڵگەنامەیە دان دەنێی کە هەموو ئەم ڕێسا ناوەکییەکانت خوێندووە، تێگەیشتووی و پەسەندت کردووە.`,
+
+  krl: `MAF Û ERKÊN WE
+
+Tomarkirina stajyerekî li CFP02 tê wateya pejirandina bêmerc a vê rêziknameya hundirîn, ku li gorî qanûnê demjimêr, bikaranîna cih û amûran, nûnertiya stajyeran û cezayan destnîşan dike.
+
+Xala 1: Ev rêzikname li gorî xalên L6352-3, L6352-4 û R6352-1 heta R6352-15 ya Qanûna Kar a Fransayê hatiye amadekirin û di tevahiya perwerdehiyê de ji bo hemû stajyeran tê sepandin.
+
+Xala 2 — Demjimêr: Bernameya her stajyerî ji hêla perwerdekarê referans û li gorî peymana perwerdehiyê tê destnîşankirin. Di rewşa nehatinê de divê di nîvroja yekem de CFP02 agahdar bibe û di rewşa nexweşiyê de di 48 saetan de belgeya bijîşkî were pêşkêşkirin. Nehatinên bêsedem ji dabînkerê re têne ragihandin û dibe ku ji alîkariyê kêmkirinek çêbibe.
+
+Xala 3 — Tenduristî, paqijî û ewlehî: Cilê guncaw tê xwestin. Bêyî destûr daliqandina agahdariyan û bikaranîna kesane ya makîneya kopiyê qedexe ye. Cixarekêşan û vape di hundir de qedexe ye (li parkingê destûr e). Xwarin û vexwarin di odeyên perwerdehiyê de qedexe ye.
+
+Xala 4 — Alkol û narkotîk: Anîn an bikaranîna maddeyên neqanûnî û tiryakker (narkotîk, alkol, derman…) qedexe ye.
+
+Xala 5 — Xwarin: Li Laon mitbaxek bi mîkrofirn, kettle, sarincok û şûştinê; li cihên din mîkrofirn û şûştin. Piştî bikaranînê paqijkirin erkê stajyer e.
+
+Xala 6 — Avdestxane: Bi hejmara pêwîst, tevî yên gihîştî ji bo kêmendaman, tên peyda kirin û divê paqij bêne hiştin.
+
+Xala 7 — Ewlehî: Avahî bi kamera tê şopandin. Li gorî GDPR (YE 2016/679) dane tenê ji hêla CFP02 tên bikaranîn û ji aliyên sêyem re nayên dayîn; gihîştin, rastkirin û jêbirin bi cfp02@cfp02.info. CFP02 ji dizî an windakirina tiştên kesane berpirsiyar nine. Rêbernameyên ewlehî û valakirinê divê bêne xwendin û her metirsî tavilê were ragihandin. Qezayên kar divê di 24 saetan de bêne ragihandin.
+
+Xala 8 — Amûr: Bi baldarî bêne bikaranîn û li cihê xwe vegerin. Komputer tenê ji bo perwerdehiyê ne.
+
+Xala 9 — Mobîl: Bikaranîn di odeyên perwerdehiyê de qedexe ye; divê bêdeng be.
+
+Xala 10 — Belaş: Perwerdehî ji bo stajyer belaş e û ji hêla saziyên giştî tê fînansekirin.
+
+Xala 11 — Ceza: Binpêkirin dikare bibe hişyarî, rexneya nivîskî an derxistina dawî ji perwerdehiyê.
+
+Xala 12 — Mafê parastinê: Tu ceza bêyî ragihandina sedeman û dayîna derfeta ravekirinê nayê sepandin.
+
+Xala 13 — Nûnertî: Komên stajyeran li gorî rêzikan nûner hilbijêrin.
+
+Xala 14 — Rola nûneran: Ji bo dema perwerdehiyê tên hilbijartin û pêşniyar û gilîyên derbarê paqijî, ewlehî û sepandina rêziknameyê digihînin.
+
+Xala 15 — Dosyeyên heqdayînê: Stajyer ji rastiya belgeyên ku radestî navendê dike berpirsiyar e.
+
+Li Laon hatiye amadekirin. Bi îmzekirina vê belgeyê hûn dipejirînin ku we tevahiya vê rêziknameya hundirîn xwendiye, fêm kiriye û pejirandiye.`,
+
+  zh: `您的权利与义务
+
+学员进入 CFP02 即表示无保留地接受本内部规章。本规章依法规定作息时间、场所与设备的使用、学员代表以及处罚等事项。
+
+第 1 条：本规章依据法国劳动法 L6352-3、L6352-4 及 R6352-1 至 R6352-15 条制定，适用于全部学员及整个培训期间。
+
+第 2 条 — 时间：每位学员的作息由主责培训师依培训合同确定。缺席须在当日上半天通知 CFP02；因病缺席须在 48 小时内提交医疗证明。无故缺席将通知资助机构，并可能按缺席时长比例扣减培训津贴。
+
+第 3 条 — 健康、卫生与安全：请穿着得体。未经许可不得在墙上张贴；复印机不得用于私人用途。室内禁止吸烟及电子烟（停车场允许）。培训教室内禁止饮食。
+
+第 4 条 — 酒精与毒品：禁止携带或使用非法及成瘾性物质（毒品、酒精、药物等）。
+
+第 5 条 — 用餐：拉昂中心设有配备微波炉、热水壶、冰箱和水槽的厨房；其他中心配备微波炉和水槽。使用后须清洁设备和用餐区域。
+
+第 6 条 — 卫生设施：提供足够的卫生设施，包括无障碍设施，使用后须保持清洁。
+
+第 7 条 — 安全：建筑内设有视频监控。依据 GDPR（欧盟 2016/679），所收集数据仅供 CFP02 使用，不向任何第三方提供；查阅、更正与删除请联系 cfp02@cfp02.info。CFP02 对个人物品的丢失或被盗不承担责任。学员须阅读安全与疏散须知，并立即报告任何危险。工伤须在 24 小时内申报。
+
+第 8 条 — 设备：设备与资料须妥善使用并放回原处。计算机仅限培训用途。
+
+第 9 条 — 手机：培训教室内禁止使用手机，须设为静音。
+
+第 10 条 — 免费：培训对学员免费，由公共机构资助。
+
+第 11 条 — 处罚：违反规章可导致警告、书面批评或最终开除。
+
+第 12 条 — 申辩权：任何处罚均须先告知学员理由并给予其解释的机会。
+
+第 13 条 — 代表：学员小组依相关规定选举代表。
+
+第 14 条 — 代表的职责：代表任期为培训期间，负责转达关于卫生、安全及规章执行的建议与投诉。
+
+第 15 条 — 津贴材料：学员对提交给中心的材料的真实性负责。
+
+于拉昂订立。签署本文件即表示您已阅读、理解并接受本内部规章的全部内容。`,
 };
 
 /* ---- Extra fixed handbook sections (pages 6-20 and 40-48 of the official Livret
@@ -801,12 +1161,24 @@ const HANDBOOK_SECTIONS = {
 };
 
 
+/* Internal regulations text in the trainee's language (display only).
+   Falls back to French when no translation exists. */
+function getRegulationsText(lang) {
+  return RULES_TEXT[lang] || RULES_TEXT.fr;
+}
+
 function getHandbookSections(lang) {
   const order = [lang, "fr", "ar", "en"];
+  let base = HANDBOOK_SECTIONS.fr;
   for (const code of order) {
-    if (HANDBOOK_SECTIONS[code] && HANDBOOK_SECTIONS[code].length) return HANDBOOK_SECTIONS[code];
+    if (HANDBOOK_SECTIONS[code] && HANDBOOK_SECTIONS[code].length) { base = HANDBOOK_SECTIONS[code]; break; }
   }
-  return HANDBOOK_SECTIONS.fr;
+  // If the handbook itself is only available in French but the regulations exist
+  // in the trainee's language, show the translated regulations section.
+  if (!HANDBOOK_SECTIONS[lang] && RULES_TEXT[lang]) {
+    return base.map((s) => (s.body && s.body === RULES_TEXT.fr ? { ...s, body: RULES_TEXT[lang] } : s));
+  }
+  return base;
 }
 
 function getRulesTextForLang(lang) {
@@ -1202,9 +1574,11 @@ function LoginFlow({ onLogin }) {
         const next = [...idx, rec];
         await sSet("trainees_index", next);
 
-        const rulesText = getRulesTextForLang(lang);
+        // The legally binding signed version is always the French text,
+        // whatever language the trainee read it in.
+        const rulesText = getRulesTextForLang("fr");
         const signedAt = Date.now();
-        await saveSignedRulesAck(rec.id, dk, { lang, rulesText, signatureDataUrl, signedAt });
+        await saveSignedRulesAck(rec.id, dk, { lang, readLang: lang, signedLang: "fr", rulesText, signatureDataUrl, signedAt });
 
         setBusy(false);
         onLogin({ type: "trainee", ...rec, dk });
@@ -1371,7 +1745,7 @@ function LoginFlow({ onLogin }) {
                 className="rounded-xl p-4 mb-4 max-h-64 overflow-y-auto whitespace-pre-wrap text-[14px] leading-relaxed"
                 style={{ border: `1.5px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}
               >
-                {getRulesTextForLang(lang)}
+                {getRegulationsText(lang)}
               </div>
 
               <label className="flex items-start gap-2 mb-4 text-sm" style={{ color: COLORS.ink }}>
@@ -1522,7 +1896,8 @@ function RulesView({ lang, t, traineeId, dk, traineeName, group }) {
 
   async function handleDownload() {
     if (!ack) return;
-    const dir = (LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr";
+    // Signed text is stored in French, so always render it left-to-right.
+    const dir = ack.signedLang === "fr" || !ack.lang ? "ltr" : ((LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr");
     const el = buildSignedRulesElement({
       traineeName, group,
       birthDate: null,
@@ -2853,7 +3228,7 @@ function TraineeRulesAckView({ traineeId, dk, t, traineeName, group, birthDate }
   if (ack === undefined) return <LoadingBlock t={t} />;
 
   async function handleDownload() {
-    const dir = (LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr";
+    const dir = ack.signedLang === "fr" || !ack.lang ? "ltr" : ((LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr");
     const el = buildSignedRulesElement({
       traineeName, group, birthDate,
       signedAt: ack.signedAt,
