@@ -1913,18 +1913,8 @@ function RulesView({ lang, t, traineeId, dk, traineeName, group }) {
     <div>
       <SectionHeader icon={<BookOpen size={20} color="#fff" />} color={COLORS.rules} title={t("rulesHeading")} />
 
-      <Card className="p-4 mt-4 flex items-center gap-3" style={{ backgroundColor: COLORS.rules + "0D", borderColor: COLORS.rules + "40" }}>
-        <div className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0" style={{ backgroundColor: COLORS.rules }}>
-          <BookOpen size={20} color="#fff" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="font-semibold" style={{ color: COLORS.ink }}>{t("handbookTitle")}</p>
-          <p className="text-xs mt-0.5" style={{ color: COLORS.inkSoft }}>{t("handbookReadonly")}</p>
-        </div>
-        <button onClick={() => setShowHandbook(true)} className="px-4 py-2 rounded-xl text-sm font-medium flex items-center gap-1.5 transition active:scale-95" style={{ backgroundColor: COLORS.rules, color: "#fff" }}>
-          <BookOpen size={16} /> {t("handbookOpen")}
-        </button>
-      </Card>
+
+
 
       {ack && (
         <Card className="p-4 mt-4 flex items-center gap-3">
