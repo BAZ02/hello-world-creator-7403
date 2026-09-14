@@ -1745,7 +1745,7 @@ function LoginFlow({ onLogin }) {
                 className="rounded-xl p-4 mb-4 max-h-64 overflow-y-auto whitespace-pre-wrap text-[14px] leading-relaxed"
                 style={{ border: `1.5px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}
               >
-                {getRulesTextForLang(lang)}
+                {getRegulationsText(lang)}
               </div>
 
               <label className="flex items-start gap-2 mb-4 text-sm" style={{ color: COLORS.ink }}>
