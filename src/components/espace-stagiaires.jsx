@@ -1161,12 +1161,24 @@ const HANDBOOK_SECTIONS = {
 };
 
 
+/* Internal regulations text in the trainee's language (display only).
+   Falls back to French when no translation exists. */
+function getRegulationsText(lang) {
+  return RULES_TEXT[lang] || RULES_TEXT.fr;
+}
+
 function getHandbookSections(lang) {
   const order = [lang, "fr", "ar", "en"];
+  let base = HANDBOOK_SECTIONS.fr;
   for (const code of order) {
-    if (HANDBOOK_SECTIONS[code] && HANDBOOK_SECTIONS[code].length) return HANDBOOK_SECTIONS[code];
+    if (HANDBOOK_SECTIONS[code] && HANDBOOK_SECTIONS[code].length) { base = HANDBOOK_SECTIONS[code]; break; }
   }
-  return HANDBOOK_SECTIONS.fr;
+  // If the handbook itself is only available in French but the regulations exist
+  // in the trainee's language, show the translated regulations section.
+  if (!HANDBOOK_SECTIONS[lang] && RULES_TEXT[lang]) {
+    return base.map((s) => (s.body && s.body === RULES_TEXT.fr ? { ...s, body: RULES_TEXT[lang] } : s));
+  }
+  return base;
 }
 
 function getRulesTextForLang(lang) {
