@@ -1896,7 +1896,8 @@ function RulesView({ lang, t, traineeId, dk, traineeName, group }) {
 
   async function handleDownload() {
     if (!ack) return;
-    const dir = (LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr";
+    // Signed text is stored in French, so always render it left-to-right.
+    const dir = ack.signedLang === "fr" || !ack.lang ? "ltr" : ((LANGS.find((l) => l.code === ack.lang) || {}).dir || "ltr");
     const el = buildSignedRulesElement({
       traineeName, group,
       birthDate: null,
