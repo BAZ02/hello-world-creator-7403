@@ -1134,6 +1134,8 @@ function LanguageGrid({ lang, onPick }) {
 function LoginFlow({ onLogin }) {
   const [lang, setLang] = useState("fr");
   const [step, setStep] = useState("role");
+  const [showLangSwitcher, setShowLangSwitcher] = useState(false);
+
   const [traineeMode, setTraineeMode] = useState("new");
   const [name, setName] = useState("");
   const [firstName, setFirstName] = useState("");
