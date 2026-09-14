@@ -173,29 +173,48 @@ function useT(lang) {
 }
 
 /* ============================== storage helpers (in-memory — PREVIEW ONLY) ==============================
-   This live preview keeps data in memory (it resets on refresh) because the
-   sandboxed preview cannot use localStorage. The real project in your ZIP
-   still uses localStorage exactly as before — nothing to change there. */
+/* ============================== storage helpers (localStorage) ============================== */
 
-const __memStore = new Map();
+const PREFIX = "tsapp:";
+
+function ls() {
+  return typeof window === "undefined" ? null : window.localStorage;
+}
 
 async function sGet(key) {
-  return __memStore.has(key) ? JSON.parse(JSON.stringify(__memStore.get(key))) : null;
+  const store = ls();
+  if (!store) return null;
+  const raw = store.getItem(PREFIX + key);
+  if (raw === null) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
 }
 async function sSet(key, value) {
-  __memStore.set(key, JSON.parse(JSON.stringify(value)));
+  const store = ls();
+  if (!store) return false;
+  store.setItem(PREFIX + key, JSON.stringify(value));
   return true;
 }
 async function sDelete(key) {
-  __memStore.delete(key);
+  const store = ls();
+  if (store) store.removeItem(PREFIX + key);
 }
 async function sList(prefix) {
+  const store = ls();
   const keys = [];
-  for (const k of __memStore.keys()) {
-    if (k.startsWith(prefix)) keys.push(k);
+  if (!store) return keys;
+  for (let i = 0; i < store.length; i++) {
+    const k = store.key(i);
+    if (k && k.startsWith(PREFIX) && k.slice(PREFIX.length).startsWith(prefix)) {
+      keys.push(k.slice(PREFIX.length));
+    }
   }
   return keys;
 }
+
 
 /* ============================== crypto (end-to-end encryption) ============================== */
 
