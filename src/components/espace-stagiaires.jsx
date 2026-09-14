@@ -172,8 +172,8 @@ function useT(lang) {
   return useCallback((key) => (STR[key] && (STR[key][lang] || STR[key].fr)) || key, [lang]);
 }
 
-/* ============================== storage helpers (in-memory — PREVIEW ONLY) ==============================
 /* ============================== storage helpers (localStorage) ============================== */
+
 
 const PREFIX = "tsapp:";
 
