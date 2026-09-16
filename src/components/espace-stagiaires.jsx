@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   BookOpen, FileText, ClipboardList, Upload, Camera, LogOut, User, Users,
   Lock, Trash2, Eye, Download, Plus, X, ChevronLeft, Settings,
-  Building2, Check, AlertCircle, Loader2, ChevronRight, Shield, UserPlus
+  Building2, Check, AlertCircle, Loader2, ChevronRight, Shield, UserPlus,
+  MessageCircle, Send, Search, Paperclip, Volume2, Pause, Play, Square
 } from "lucide-react";
 
 /* ============================== i18n ============================== */
@@ -33,14 +34,29 @@ const STR = {
   roleTrainer: { fr: "Je suis formateur", ar: "أنا المدرب", en: "I am the trainer", tr: "Ben eğitmenim", pt: "Sou o formador", es: "Soy el formador", prs: "من آموزگار هستم", fa: "من مربی هستم", ru: "Я наставник", uk: "Я наставник", ku: "من ڕاهێنەرم", zh: "我是培训师" , krl: "Ez perwerdekar im"},
   newAccount: { fr: "Nouveau compte", ar: "حساب جديد", en: "New account", tr: "Yeni hesap", pt: "Nova conta", es: "Cuenta nueva", prs: "حساب نو", fa: "حساب جدید", ru: "Новый аккаунт", uk: "Новий акаунт", ku: "هەژماری نوێ", zh: "新账户" , krl: "Hesabê nû"},
   haveAccount: { fr: "J'ai déjà un compte", ar: "لدي حساب مسبق", en: "I already have an account", tr: "Zaten hesabım var", pt: "Já tenho uma conta", es: "Ya tengo una cuenta", prs: "من حساب دارم", fa: "من حساب دارم", ru: "У меня уже есть аккаунт", uk: "У мене вже є акаунт", ku: "پێشتر هەژمارم هەیە", zh: "我已有账户" , krl: "Hesabê min ê xwedî heye"},
+  haveAccount: { fr: "J'ai déjà un compte", ar: "لدي حساب مسبق", en: "I already have an account", tr: "Zaten hesabım var", pt: "Já tenho uma conta", es: "Ya tengo una cuenta", prs: "من حساب دارم", fa: "من حساب دارم", ru: "У меня уже есть аккаунт", uk: "У мене вже є акаунт", ku: "پێشتر هەژمارم هەیە", zh: "我已有账户" , krl: "Hesabê min ê xwedî heye"},
+  closedRegistrationMsg: { fr: "Les inscriptions sont fermées. Demandez vos identifiants à l'administrateur.", ar: "التسجيلات مغلقة. اطلب بيانات الدخول من المسؤول.", en: "Registration is closed. Ask the administrator for your login details." },
+  createTraineeAccountBtn: { fr: "Créer un compte stagiaire", ar: "إنشاء حساب متدرب", en: "Create trainee account" },
+  traineeAccountCreatedMsg: { fr: "Compte stagiaire créé", ar: "تم إنشاء حساب المتدرب", en: "Trainee account created" },
+  temporaryTraineeCodeLabel: { fr: "Code temporaire du stagiaire (ex. A1234)", ar: "الرمز المؤقت للمتدرب (مثال A1234)", en: "Trainee temporary code (e.g. A1234)" },
+  traineeAccountsHeading: { fr: "Comptes stagiaires", ar: "حسابات المتدربين", en: "Trainee accounts" },
+  learningPathLabel: { fr: "Parcours d'apprentissage", ar: "مسار التعلم", en: "Learning path" },
+  linguisticOnlyPath: { fr: "Formation Linguistique uniquement", ar: "التكوين اللغوي فقط", en: "Language training only" },
+  linguisticProfessionalPath: { fr: "Formation Linguistique + Intégration Professionnelle", ar: "التكوين اللغوي + الإدماج المهني", en: "Language training + Professional integration" },
+  professionalLockedMsg: { fr: "La partie professionnelle n'est pas incluse dans ce parcours.", ar: "الجزء المهني غير مشمول في هذا المسار.", en: "The professional section is not included in this learning path." },
+  createAccountForTraineeBtn: { fr: "Créer un compte", ar: "إنشاء حساب", en: "Create account" },
+  resetTraineeCodeBtn: { fr: "Envoyer un code temporaire", ar: "إرسال رمز مؤقت", en: "Send temporary code" },
+  generateTemporaryCodeBtn: { fr: "Générer automatiquement", ar: "إنشاء تلقائي", en: "Generate automatically" },
   fullNameLabel: { fr: "Nom complet", ar: "الاسم الكامل", en: "Full name", tr: "Ad soyad", pt: "Nome completo", es: "Nombre completo", prs: "نام کامل", fa: "نام کامل", ru: "Полное имя", uk: "Повне ім'я", ku: "ناوی تەواو", zh: "全名" , krl: "Navê temamî"},
   groupLabel: { fr: "Groupe", ar: "القروب", en: "Group", tr: "Grup", pt: "Grupo", es: "Grupo", prs: "گروپ", fa: "گروه", ru: "Группа", uk: "Група", ku: "گرووپ", zh: "小组" , krl: "Kome"},
-  pinLabel: { fr: "Code (4 chiffres)", ar: "الرمز (4 أرقام)", en: "PIN (4 digits)", tr: "Kod (4 hane)", pt: "Código (4 dígitos)", es: "Código (4 dígitos)", prs: "کوډ (۴ رقم)", fa: "کد (۴ رقم)", ru: "Код (4 цифры)", uk: "Код (4 цифри)", ku: "کۆد (٤ ژمارە)", zh: "密码（4位数字）" , krl: "Kod (4 hejmar)"},
-  pinHint: { fr: "Choisissez un code à 4 chiffres facile à retenir", ar: "اختر رمزاً من 4 أرقام سهل التذكر", en: "Choose a 4-digit PIN you will remember", tr: "Kolay hatırlanır bir kod seçin", pt: "Escolha um código fácil de lembrar", es: "Elige un código fácil de recordar", prs: "یک کوډ آسان انتخاب کنید", fa: "یک کد آسان به یاد داشتنی انتخاب کنید", ru: "Выберите код, который легко запомнить", uk: "Виберіть код, який легко запам'ятати", ku: "کۆدێک هەڵبژێرە کە ئاسان بێت بیرت بێت", zh: "选择一个容易记住的密码" , krl: "Kodekê hilbijêre ku hêsan bîra te bibe"},
+    pinLabel: { fr: "Code (1 lettre + 4 chiffres)", ar: "الرمز (حرف واحد + 4 أرقام)", en: "Code (1 letter + 4 digits)", tr: "Kod (1 harf + 4 rakam)", pt: "Código (1 letra + 4 dígitos)", es: "Código (1 letra + 4 cifras)" },
+    trainerPinLabel: { fr: "Code formateur (12 caractères)", ar: "رمز المدرب (12 حرفاً)", en: "Trainer code (12 characters)", tr: "Eğitmen kodu (12 karakter)", pt: "Código do formador (12 caracteres)", es: "Código del formador (12 caracteres)" },
+  pinHint: { fr: "Exemple : A1234 (1 lettre et 4 chiffres)", ar: "مثال: A1234 (حرف واحد و4 أرقام)", en: "Example: A1234 (1 letter and 4 digits)", tr: "Örnek: A1234 (1 harf ve 4 rakam)", pt: "Exemplo: A1234 (1 letra e 4 dígitos)", es: "Ejemplo: A1234 (1 letra y 4 cifras)" },
   createAccountBtn: { fr: "Créer mon compte", ar: "إنشاء الحساب", en: "Create account", tr: "Hesap oluştur", pt: "Criar conta", es: "Crear cuenta", prs: "ایجاد حساب", fa: "ایجاد حساب", ru: "Создать аккаунт", uk: "Створити акаунт", ku: "دروستکردنی هەژمار", zh: "创建账户" , krl: "Hesabê min biafirîne"},
   loginBtn: { fr: "Se connecter", ar: "دخول", en: "Log in", tr: "Giriş yap", pt: "Entrar", es: "Entrar", prs: "ننوت", fa: "ورود", ru: "Войти", uk: "Увійти", ku: "چوونەژوورەوە", zh: "登录" , krl: "Têkeve"},
   backBtn: { fr: "Retour", ar: "رجوع", en: "Back", tr: "Geri", pt: "Voltar", es: "Atrás", prs: "شاته", fa: "بازگشت", ru: "Назад", uk: "Назад", ku: "گەڕانەوە", zh: "返回" , krl: "Vegere"},
   trainerPinLabel: { fr: "Code formateur", ar: "رمز المدرب", en: "Trainer PIN", tr: "Eğitmen kodu", pt: "Código do formador", es: "Código del formador", prs: "کوډ آموزګار", fa: "کد مربی", ru: "Код наставника", uk: "Код наставника", ku: "کۆدی ڕاهێنەر", zh: "培训师密码" , krl: "Koda perwerdekar"},
+  trainerLoginNameLabel: { fr: "Nom du formateur ou administrateur", ar: "اسم المدرب أو المسؤول", en: "Trainer or administrator name" },
   trainerLoginBtn: { fr: "Entrer", ar: "دخول", en: "Enter", tr: "Gir", pt: "Entrar", es: "Entrar", prs: "ننوت", fa: "ورود", ru: "Войти", uk: "Увійти", ku: "چوونەژوورەوە", zh: "进入" , krl: "Têkeve"},
   errorWrongPin: { fr: "Code incorrect", ar: "الرمز غير صحيح", en: "Incorrect PIN", tr: "Kod yanlış", pt: "Código incorreto", es: "Código incorrecto", prs: "کوډ غلط دی", fa: "کد اشتباه است", ru: "Неверный код", uk: "Неправильний код", ku: "کۆد هەڵەیە", zh: "密码错误" , krl: "Koda şaş"},
   errorNotFound: { fr: "Compte introuvable", ar: "لم يتم العثور على الحساب", en: "Account not found", tr: "Hesap bulunamadı", pt: "Conta não encontrada", es: "Cuenta no encontrada", prs: "حساب پیدا نشد", fa: "حساب پیدا نشد", ru: "Аккаунт не найден", uk: "Акаунт не знайдено", ku: "هەژمار نەدۆزرایەوە", zh: "未找到账户" , krl: "Hesab nehat dîtin"},
@@ -50,6 +66,40 @@ const STR = {
   navRules: { fr: "Règles", ar: "القواعد", en: "Rules", tr: "Kurallar", pt: "Regras", es: "Reglas", prs: "قواعد", fa: "قوانین", ru: "Правила", uk: "Правила", ku: "یاسا", zh: "规则" , krl: "Rêgez"},
   navDocuments: { fr: "Documents", ar: "الوثائق", en: "Documents", tr: "Belgeler", pt: "Documentos", es: "Documentos", prs: "اسناد", fa: "اسناد", ru: "Документы", uk: "Документи", ku: "بەڵگەنامەکان", zh: "文件" , krl: "Belge"},
   navActivity: { fr: "Activité du jour", ar: "النشاط اليومي", en: "Daily activity", tr: "Günlük etkinlik", pt: "Atividade diária", es: "Actividad diaria", prs: "فعالیت روزانه", fa: "فعالیت روزانه", ru: "Активность дня", uk: "Активність дня", ku: "چالاکی ڕۆژانە", zh: "每日活动" , krl: "Çalakiya rojane"},
+  navMessages: { fr: "Messages", ar: "الرسائل", en: "Messages", tr: "Mesajlar", pt: "Mensagens", es: "Mensajes" },
+  navProfile: { fr: "Profil", ar: "الملف الشخصي", en: "Profile", tr: "Profil", pt: "Perfil", es: "Perfil" },
+  listenRules: { fr: "Écouter les règles", ar: "استمع إلى القواعد", en: "Listen to the rules", tr: "Kuralları dinle", pt: "Ouvir as regras", es: "Escuchar las reglas" },
+  rulesLanguageLabel: { fr: "Langue du règlement", ar: "لغة النظام الداخلي", en: "Regulations language", tr: "Yönetmelik dili", pt: "Idioma do regulamento", es: "Idioma del reglamento" },
+  speechLanguageLabel: { fr: "Langue de lecture", ar: "لغة القراءة", en: "Reading language", tr: "Okuma dili", pt: "Idioma de leitura", es: "Idioma de lectura" },
+  speechPause: { fr: "Pause", ar: "إيقاف مؤقت", en: "Pause", tr: "Duraklat", pt: "Pausa", es: "Pausa" },
+  speechResume: { fr: "Reprendre", ar: "استئناف", en: "Resume", tr: "Devam", pt: "Retomar", es: "Reanudar" },
+  speechStop: { fr: "Arrêter", ar: "إيقاف", en: "Stop", tr: "Durdur", pt: "Parar", es: "Detener" },
+  speechUnavailable: { fr: "La lecture vocale n'est pas disponible dans ce navigateur.", ar: "القراءة الصوتية غير متاحة في هذا المتصفح.", en: "Voice reading is not available in this browser." },
+  installApp: { fr: "Installer l'application", ar: "تثبيت التطبيق", en: "Install the app", tr: "Uygulamayı yükle", pt: "Instalar aplicação", es: "Instalar aplicación" },
+  installAppHint: { fr: "Installez l'espace CFP02 sur votre appareil pour y accéder rapidement.", ar: "ثبّت مساحة CFP02 على جهازك للوصول السريع.", en: "Install the CFP02 space on your device for quick access." },
+  installNow: { fr: "Installer", ar: "تثبيت", en: "Install", tr: "Yükle", pt: "Instalar", es: "Instalar" },
+  profileHeading: { fr: "Mon profil", ar: "ملفي الشخصي", en: "My profile", tr: "Profilim", pt: "O meu perfil", es: "Mi perfil" },
+  profilePhotoLabel: { fr: "Photo de profil", ar: "صورة الملف الشخصي", en: "Profile photo", tr: "Profil fotoğrafı", pt: "Fotografia de perfil", es: "Foto de perfil" },
+  profilePhotoBtn: { fr: "Ajouter une photo", ar: "إضافة صورة", en: "Add a photo", tr: "Fotoğraf ekle", pt: "Adicionar fotografia", es: "Añadir foto" },
+  profileEmailLabel: { fr: "Adresse e-mail", ar: "البريد الإلكتروني", en: "Email address", tr: "E-posta adresi", pt: "Endereço de e-mail", es: "Correo electrónico" },
+  profilePhraseLabel: { fr: "Phrase qui me représente", ar: "عبارة تمثلني", en: "A phrase that represents me", tr: "Beni anlatan cümle", pt: "Frase que me representa", es: "Frase que me representa" },
+  profilePhrasePlaceholder: { fr: "Écrivez une phrase courte à votre sujet...", ar: "اكتب عبارة قصيرة عنك...", en: "Write a short sentence about yourself...", tr: "Kendiniz hakkında kısa bir cümle yazın...", pt: "Escreva uma frase curta sobre si...", es: "Escribe una frase corta sobre ti..." },
+  saveProfileBtn: { fr: "Enregistrer le profil", ar: "حفظ الملف الشخصي", en: "Save profile", tr: "Profili kaydet", pt: "Guardar perfil", es: "Guardar perfil" },
+  profileSavedMsg: { fr: "Profil enregistré", ar: "تم حفظ الملف الشخصي", en: "Profile saved", tr: "Profil kaydedildi", pt: "Perfil guardado", es: "Perfil guardado" },
+  messagesHeading: { fr: "Messages / Chat", ar: "الرسائل / الدردشة", en: "Messages / Chat", tr: "Mesajlar / Sohbet", pt: "Mensagens / Chat", es: "Mensajes / Chat" },
+  trainersDirectoryHeading: { fr: "Tous les formateurs", ar: "كل المدربين", en: "All trainers", tr: "Tüm eğitmenler", pt: "Todos os formadores", es: "Todos los formadores" },
+  activeConversationsHeading: { fr: "Conversations actives", ar: "المحادثات النشطة", en: "Active conversations", tr: "Aktif sohbetler", pt: "Conversas ativas", es: "Conversaciones activas" },
+  chooseTrainerMsg: { fr: "Choisissez un formateur pour commencer une conversation.", ar: "اختر مدرباً لبدء محادثة.", en: "Choose a trainer to start a conversation.", tr: "Bir sohbet başlatmak için eğitmen seçin.", pt: "Escolha um formador para iniciar uma conversa.", es: "Elige un formador para iniciar una conversación." },
+  chooseTraineeMsg: { fr: "Choisissez un stagiaire pour commencer une conversation.", ar: "اختر متدرباً لبدء محادثة.", en: "Choose a trainee to start a conversation.", tr: "Bir sohbet başlatmak için stajyer seçin.", pt: "Escolha um estagiário para iniciar uma conversa.", es: "Elige un aprendiz para iniciar una conversación." },
+  noMessagesYetMsg: { fr: "Aucun message pour le moment.", ar: "لا توجد رسائل حالياً.", en: "No messages yet.", tr: "Henüz mesaj yok.", pt: "Ainda não há mensagens.", es: "Aún no hay mensajes." },
+  messagePlaceholder: { fr: "Écrire un message...", ar: "اكتب رسالة...", en: "Write a message...", tr: "Mesaj yaz...", pt: "Escrever uma mensagem...", es: "Escribe un mensaje..." },
+  sendMessageBtn: { fr: "Envoyer", ar: "إرسال", en: "Send", tr: "Gönder", pt: "Enviar", es: "Enviar" },
+  youLabel: { fr: "Vous", ar: "أنت", en: "You", tr: "Siz", pt: "Você", es: "Tú" },
+  attachFileBtn: { fr: "Joindre un fichier ou une image", ar: "إرفاق ملف أو صورة", en: "Attach a file or image", tr: "Dosya veya görsel ekle", pt: "Anexar ficheiro ou imagem", es: "Adjuntar archivo o imagen" },
+  attachmentTooLargeMsg: { fr: "Le fichier dépasse la limite de 3 Mo.", ar: "الملف يتجاوز حد 3 ميغابايت.", en: "The file exceeds the 3 MB limit.", tr: "Dosya 3 MB sınırını aşıyor.", pt: "O ficheiro excede o limite de 3 MB.", es: "El archivo supera el límite de 3 MB." },
+  removeAttachmentBtn: { fr: "Retirer la pièce jointe", ar: "إزالة المرفق", en: "Remove attachment", tr: "Eki kaldır", pt: "Remover anexo", es: "Quitar adjunto" },
+  downloadAttachmentBtn: { fr: "Télécharger la pièce jointe", ar: "تنزيل المرفق", en: "Download attachment", tr: "Eki indir", pt: "Transferir anexo", es: "Descargar adjunto" },
+  noTrainersAvailableMsg: { fr: "Aucun formateur disponible.", ar: "لا يوجد مدربون متاحون.", en: "No trainers available.", tr: "Kullanılabilir eğitmen yok.", pt: "Não há formadores disponíveis.", es: "No hay formadores disponibles." },
   rulesHeading: { fr: "Règles générales", ar: "القواعد العامة", en: "General rules", tr: "Genel kurallar", pt: "Regras gerais", es: "Reglas generales", prs: "قواعد عمومی", fa: "قوانین عمومی", ru: "Общие правила", uk: "Загальні правила", ku: "یاسا گشتییەکان", zh: "通用规则" , krl: "Rêgezên giştî"},
   rulesEmptyTrainee: { fr: "Le formateur n'a pas encore ajouté de règles.", ar: "لم يقم المدرب بإضافة القواعد بعد.", en: "The trainer has not added rules yet.", tr: "Eğitmen henüz kural eklemedi.", pt: "O formador ainda não adicionou regras.", es: "El formador aún no ha añadido reglas.", prs: "آموزګار تر اوسه قواعد نه دي اضافه کړي.", fa: "مربی هنوز قوانینی اضافه نکرده است.", ru: "Наставник ещё не добавил правила.", uk: "Наставник ще не додав правила.", ku: "ڕاهێنەر هێشتا یاسای زیاد نەکردووە.", zh: "培训师尚未添加规则。" , krl: "Perwerdekar hîn rêgez nebirîne."},
   documentsHeading: { fr: "Mes documents", ar: "وثائقي", en: "My documents", tr: "Belgelerim", pt: "Meus documentos", es: "Mis documentos", prs: "اسناد زما", fa: "اسناد من", ru: "Мои документы", uk: "Мої документи", ku: "بەڵگەنامەکانم", zh: "我的文件" , krl: "Belgeyên min"},
@@ -119,6 +169,21 @@ const STR = {
   addTrainerBtn: { fr: "Ajouter un formateur", ar: "إضافة مدرب", en: "Add a trainer" },
   trainerNameLabel: { fr: "Nom du formateur", ar: "اسم المدرب", en: "Trainer name" },
   newTrainerPinLabel: { fr: "Code du formateur (4 chiffres)", ar: "رمز المدرب (4 أرقام)", en: "Trainer PIN (4 digits)" },
+    newTrainerPinLabel: { fr: "Code du formateur (12 caractères, lettre + caractère spécial)", ar: "رمز المدرب (12 حرفاً، حرف + رمز خاص)", en: "Trainer code (12 characters, letter + special character)" },
+    codeFormatMsg: { fr: "Le code doit contenir exactement 12 caractères, dont au moins une lettre et un caractère spécial.", ar: "يجب أن يتكون الرمز من 12 حرفاً بالضبط، منها حرف واحد ورمز خاص على الأقل.", en: "The code must be exactly 12 characters and contain at least one letter and one special character." },
+    traineeCodeFormatMsg: { fr: "Le code doit contenir exactement 1 lettre et 4 chiffres, par exemple A1234.", ar: "يجب أن يحتوي الرمز على حرف واحد و4 أرقام، مثل A1234.", en: "The code must contain exactly 1 letter and 4 digits, for example A1234." },
+    temporaryCodeHeading: { fr: "Code temporaire", ar: "رمز مؤقت", en: "Temporary code" },
+    sendTemporaryCodeBtn: { fr: "Générer un code temporaire", ar: "إنشاء رمز مؤقت", en: "Generate temporary code" },
+    temporaryCodeHelp: { fr: "Transmettez ce code au stagiaire. Il devra choisir un nouveau code à sa prochaine connexion.", ar: "أرسل هذا الرمز إلى المتدرب. سيختار رمزاً جديداً عند تسجيل الدخول التالي.", en: "Send this code to the trainee. They must choose a new code at their next login." },
+    changeCodeHeading: { fr: "Créer votre nouveau code", ar: "إنشاء رمزك الجديد", en: "Create your new code" },
+    changeCodeHelp: { fr: "Votre code temporaire a été accepté. Choisissez maintenant un code personnel avec 1 lettre et 4 chiffres.", ar: "تم قبول الرمز المؤقت. اختر الآن رمزاً شخصياً بحرف واحد و4 أرقام.", en: "Your temporary code was accepted. Choose a personal code with 1 letter and 4 digits." },
+    forgotCodeBtn: { fr: "Code oublié ? Demander à l'administrateur", ar: "نسيت الرمز؟ اطلب من المسؤول", en: "Forgot your code? Ask the administrator" },
+    recoveryNameLabel: { fr: "Votre nom de formateur", ar: "اسمك كمدرب", en: "Your trainer name" },
+    recoveryRequestedMsg: { fr: "Votre demande a été envoyée à l'administrateur.", ar: "تم إرسال طلبك إلى المسؤول.", en: "Your request was sent to the administrator." },
+    recoveryRequestsHeading: { fr: "Demandes de récupération", ar: "طلبات الاستعادة", en: "Recovery requests" },
+    resetTrainerCodeBtn: { fr: "Réinitialiser le code", ar: "إعادة ضبط الرمز", en: "Reset code" },
+    staffTemporaryCodeHeading: { fr: "Nouveau code temporaire formateur", ar: "رمز المدرب المؤقت الجديد", en: "New temporary trainer code" },
+    staffTemporaryCodeHelp: { fr: "Transmettez ce code au formateur. Il devra en choisir un nouveau après sa connexion.", ar: "أرسل هذا الرمز إلى المدرب. سيختار رمزاً جديداً بعد تسجيل الدخول.", en: "Send this code to the trainer. They must choose a new one after logging in." },
   roleLabel: { fr: "Rôle", ar: "الصلاحية", en: "Role" },
   adminRoleLabel: { fr: "Administrateur (accès total)", ar: "مسؤول (صلاحية كاملة)", en: "Administrator (full access)" },
   trainerRoleLabel: { fr: "Formateur", ar: "مدرب", en: "Trainer" },
@@ -140,6 +205,8 @@ const STR = {
   loggedInAsLabel: { fr: "Connecté en tant que", ar: "مسجّل الدخول باسم", en: "Logged in as" },
 
   rulesAcceptHeading: { fr: "Règlement intérieur", ar: "النظام الداخلي", en: "Internal regulations" },
+  rulesAcceptanceRequiredHeading: { fr: "Lecture et signature obligatoires", ar: "القراءة والتوقيع إلزاميان", en: "Reading and signature required" },
+  rulesAcceptanceRequiredMsg: { fr: "Veuillez lire les règles dans la langue choisie, cocher votre accord et signer avant d'accéder à votre espace.", ar: "يرجى قراءة القواعد باللغة المختارة، وتأكيد موافقتك والتوقيع قبل الدخول إلى مساحتك.", en: "Read the rules in your selected language, confirm your agreement and sign before accessing your space." },
   acceptRulesLabel: { fr: "J'ai lu et j'accepte le règlement intérieur.", ar: "لقد قرأت النظام الداخلي وأوافق عليه.", en: "I have read and accept the internal regulations." },
   signatureLabel: { fr: "Votre signature", ar: "توقيعك", en: "Your signature" },
   clearSignatureBtn: { fr: "Effacer", ar: "مسح", en: "Clear" },
@@ -297,6 +364,20 @@ async function rsaDecryptBytes(privateKey, b64str) {
 }
 
 async function ensureBootstrap() {
+  const resetMarker = "full_reset_admin_0044_v1";
+  if (!(await sGet(resetMarker))) {
+    const store = ls();
+    if (store) {
+      const keys = [];
+      for (let i = 0; i < store.length; i++) {
+        const key = store.key(i);
+        if (key && key.startsWith(PREFIX)) keys.push(key);
+      }
+      keys.forEach((key) => store.removeItem(key));
+    }
+    await sSet(resetMarker, true);
+  }
+
   // Migrate/repair the groups list from any legacy free-text trainee groups.
   const existingGroups = (await sGet("groups_index")) || [];
   if (!existingGroups.length) {
@@ -308,7 +389,29 @@ async function ensureBootstrap() {
   }
 
   let trainers = (await sGet("trainers_index")) || [];
-  if (trainers.length) return;
+  if (trainers.length) {
+    const adminMigrationMarker = "admin_identity_cfp02_v1";
+    if (!(await sGet(adminMigrationMarker))) {
+      const admin = trainers.find((trainer) => trainer.role === "admin");
+      if (admin && admin.name !== "Cfp02") {
+        try {
+          const privateKey = await unlockTrainerRecord("0044", admin);
+          const pkcs8 = await crypto.subtle.exportKey("pkcs8", privateKey);
+          const saltPin = randomB64(16);
+          const pinKey = await deriveAesKeyFromPin("02000", saltPin);
+          const wrappedByPin = await aesEncryptBytes(pinKey, new Uint8Array(pkcs8));
+          trainers = trainers.map((trainer) => trainer.id === admin.id
+            ? { ...trainer, name: "Cfp02", saltPin, wrappedByPin, mustChangeCode: false }
+            : trainer);
+          await sSet("trainers_index", trainers);
+        } catch (e) {
+          // Keep the existing administrator if its current code is not 0044.
+        }
+      }
+      await sSet(adminMigrationMarker, true);
+    }
+    return;
+  }
 
   let pub = await sGet("trainer_public_key");
   const legacyMeta = await sGet("trainer_meta");
@@ -317,12 +420,12 @@ async function ensureBootstrap() {
     // Upgrading from the single-trainer version: keep the existing PIN/keys
     // working by turning it into the first "Admin" account.
     await sSet("trainers_index", [
-      { id: genId(), name: "Admin", role: "admin", groupNames: [], saltPin: legacyMeta.salt, wrappedByPin: legacyMeta.wrapped, createdAt: Date.now() },
+      { id: genId(), name: "Admin", role: "admin", groupNames: [], saltPin: legacyMeta.salt, wrappedByPin: legacyMeta.wrapped, mustChangeCode: true, createdAt: Date.now() },
     ]);
     return;
   }
 
-  // Fresh install: generate the organization keypair and a default admin (PIN 1234).
+  // Fresh install: generate the organization keypair and the requested administrator.
   const kp = await crypto.subtle.generateKey(
     { name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
     true,
@@ -331,17 +434,18 @@ async function ensureBootstrap() {
   const pubJwk = await crypto.subtle.exportKey("jwk", kp.publicKey);
   const privPkcs8 = await crypto.subtle.exportKey("pkcs8", kp.privateKey);
   const salt = randomB64(16);
-  const pinKey = await deriveAesKeyFromPin("1234", salt);
+  const pinKey = await deriveAesKeyFromPin("0044", salt);
   const wrapped = await aesEncryptBytes(pinKey, new Uint8Array(privPkcs8));
   await sSet("trainer_public_key", pubJwk);
   await sSet("trainers_index", [
-    { id: genId(), name: "Admin", role: "admin", groupNames: [], saltPin: salt, wrappedByPin: wrapped, createdAt: Date.now() },
+    { id: genId(), name: "Admin", role: "admin", groupNames: [], saltPin: salt, wrappedByPin: wrapped, mustChangeCode: false, createdAt: Date.now() },
   ]);
 }
 
-async function findTrainerSessionByPin(pin) {
+async function findTrainerSessionByPin(name, pin) {
   const trainers = (await sGet("trainers_index")) || [];
-  for (const rec of trainers) {
+  const normalizedName = name.trim().toLowerCase();
+  for (const rec of trainers.filter((item) => item.name.trim().toLowerCase() === normalizedName)) {
     try {
       const privateKey = await unlockTrainerRecord(pin, rec);
       return { trainer: rec, privateKey };
@@ -353,6 +457,7 @@ async function findTrainerSessionByPin(pin) {
 }
 
 async function addTrainerAccount(adminPrivateKey, { name, pin, role, groupNames }) {
+  if (!isStaffCodeValid(pin)) throw new Error("INVALID_STAFF_CODE");
   const privPkcs8 = await crypto.subtle.exportKey("pkcs8", adminPrivateKey);
   const salt = randomB64(16);
   const pinKey = await deriveAesKeyFromPin(pin, salt);
@@ -362,6 +467,7 @@ async function addTrainerAccount(adminPrivateKey, { name, pin, role, groupNames 
     name: name.trim(),
     role: role === "admin" ? "admin" : "trainer",
     groupNames: role === "admin" ? [] : (groupNames || []),
+    mustChangeCode: true,
     saltPin: salt,
     wrappedByPin: wrapped,
     createdAt: Date.now(),
@@ -396,6 +502,7 @@ async function changeOwnTrainerPin(trainerId, oldPin, newPin) {
   const idx = (await sGet("trainers_index")) || [];
   const rec = idx.find((x) => x.id === trainerId);
   if (!rec) throw new Error("NOT_FOUND");
+  if (rec.role !== "admin" && !isStaffCodeValid(newPin)) throw new Error("INVALID_STAFF_CODE");
   const oldKey = await deriveAesKeyFromPin(oldPin, rec.saltPin);
   const pkcs8Buf = await aesDecryptBytes(oldKey, rec.wrappedByPin);
   const newSalt = randomB64(16);
@@ -434,6 +541,20 @@ async function createTraineeCrypto(pin) {
   const dk = await importDataKey(dkBytes);
   return { saltPin, wrappedByPin, wrappedByTrainer, dk };
 }
+
+async function createManagedTraineeAccount({ name, birthDate, group, temporaryCode, learningPath = "linguistic_professional" }) {
+  const code = temporaryCode && temporaryCode.trim()
+    ? temporaryCode.trim().toUpperCase()
+    : `T${String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0")}`;
+  if (!isTraineeCodeValid(code)) throw new Error("INVALID_TRAINEE_CODE");
+  const { saltPin, wrappedByPin, wrappedByTrainer } = await createTraineeCrypto(code);
+  const record = {
+    id: genId(), name: name.trim(), firstName: name.trim(), lastName: "", birthDate: birthDate.trim(), group: group.trim(), learningPath, lang: "fr", createdAt: Date.now(), saltPin, wrappedByPin, wrappedByTrainer, mustChangeCode: true,
+  };
+  const index = (await sGet("trainees_index")) || [];
+  await sSet("trainees_index", [...index, record]);
+  return { record, temporaryCode: code };
+}
 async function unlockTraineeDataKey(pin, record) {
   const pinKey = await deriveAesKeyFromPin(pin, record.saltPin);
   const dkBuf = await aesDecryptBytes(pinKey, record.wrappedByPin);
@@ -442,6 +563,82 @@ async function unlockTraineeDataKey(pin, record) {
 async function unlockTraineeDataKeyForTrainer(trainerPrivateKey, record) {
   const dkBuf = await rsaDecryptBytes(trainerPrivateKey, record.wrappedByTrainer);
   return importDataKey(dkBuf);
+}
+
+function isTraineeCodeValid(code) {
+  return /^[A-Za-z]\d{4}$/.test(code);
+}
+
+function isStaffCodeValid(code) {
+  return code.length === 12 && /[A-Za-z]/.test(code) && /[^A-Za-z0-9]/.test(code);
+}
+
+async function changeTraineeAccessCode(traineeId, dk, newCode) {
+  const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", dk));
+  const saltPin = randomB64(16);
+  const pinKey = await deriveAesKeyFromPin(newCode, saltPin);
+  const wrappedByPin = await aesEncryptBytes(pinKey, rawKey);
+  const index = (await sGet("trainees_index")) || [];
+  const next = index.map((trainee) => trainee.id === traineeId ? { ...trainee, saltPin, wrappedByPin, mustChangeCode: false } : trainee);
+  await sSet("trainees_index", next);
+  return next.find((trainee) => trainee.id === traineeId);
+}
+
+async function generateTemporaryTraineeCode(trainerPrivateKey, trainee) {
+  const dk = await unlockTraineeDataKeyForTrainer(trainerPrivateKey, trainee);
+  const temporaryCode = `T${String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0")}`;
+  const rawKey = new Uint8Array(await crypto.subtle.exportKey("raw", dk));
+  const saltPin = randomB64(16);
+  const pinKey = await deriveAesKeyFromPin(temporaryCode, saltPin);
+  const wrappedByPin = await aesEncryptBytes(pinKey, rawKey);
+  const index = (await sGet("trainees_index")) || [];
+  const next = index.map((item) => item.id === trainee.id ? { ...item, saltPin, wrappedByPin, mustChangeCode: true } : item);
+  await sSet("trainees_index", next);
+  return { temporaryCode, trainee: next.find((item) => item.id === trainee.id) };
+}
+
+function generateStaffCode() {
+  const letters = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+  const specials = "!@#$%*-_+";
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789!@#$%*-_+";
+  const values = crypto.getRandomValues(new Uint32Array(12));
+  const result = Array.from(values, (value) => chars[value % chars.length]);
+  result[0] = letters[values[0] % letters.length];
+  result[1] = specials[values[1] % specials.length];
+  return result.join("");
+}
+
+async function resetTrainerCodeByAdmin(adminPrivateKey, trainerId) {
+  const newCode = generateStaffCode();
+  const pkcs8 = await crypto.subtle.exportKey("pkcs8", adminPrivateKey);
+  const saltPin = randomB64(16);
+  const pinKey = await deriveAesKeyFromPin(newCode, saltPin);
+  const wrappedByPin = await aesEncryptBytes(pinKey, new Uint8Array(pkcs8));
+  const index = (await sGet("trainers_index")) || [];
+  const next = index.map((trainer) => trainer.id === trainerId ? { ...trainer, saltPin, wrappedByPin, mustChangeCode: true } : trainer);
+  await sSet("trainers_index", next);
+  return { newCode, trainers: next };
+}
+
+async function changeTrainerAccessCode(trainerId, privateKey, newCode) {
+  const pkcs8 = await crypto.subtle.exportKey("pkcs8", privateKey);
+  const saltPin = randomB64(16);
+  const pinKey = await deriveAesKeyFromPin(newCode, saltPin);
+  const wrappedByPin = await aesEncryptBytes(pinKey, new Uint8Array(pkcs8));
+  const index = (await sGet("trainers_index")) || [];
+  const next = index.map((trainer) => trainer.id === trainerId ? { ...trainer, saltPin, wrappedByPin, mustChangeCode: false } : trainer);
+  await sSet("trainers_index", next);
+  return next.find((trainer) => trainer.id === trainerId);
+}
+
+async function requestTrainerCodeRecovery(name) {
+  const trainers = (await sGet("trainers_index")) || [];
+  const trainer = trainers.find((item) => item.name.trim().toLowerCase() === name.trim().toLowerCase());
+  if (!trainer) throw new Error("NOT_FOUND");
+  const requests = (await sGet("trainer_recovery_requests")) || [];
+  const request = { id: genId(), trainerId: trainer.id, trainerName: trainer.name, createdAt: Date.now(), status: "pending" };
+  await sSet("trainer_recovery_requests", [request, ...requests.filter((item) => item.trainerId !== trainer.id || item.status !== "pending")]);
+  return request;
 }
 
 async function archiveTrainee(traineeId, archived) {
@@ -469,10 +666,129 @@ async function deleteTraineeCompletely(traineeId) {
   return next;
 }
 
+async function updateTraineeProfile(traineeId, profile) {
+  const index = (await sGet("trainees_index")) || [];
+  const next = index.map((trainee) => trainee.id === traineeId ? { ...trainee, ...profile } : trainee);
+  await sSet("trainees_index", next);
+  return next.find((trainee) => trainee.id === traineeId);
+}
+
+async function updateTrainerProfile(trainerId, profile) {
+  const index = (await sGet("trainers_index")) || [];
+  const next = index.map((trainer) => trainer.id === trainerId ? { ...trainer, ...profile } : trainer);
+  await sSet("trainers_index", next);
+  return next.find((trainer) => trainer.id === trainerId);
+}
+
+async function loadConversationsForTrainee(traineeId) {
+  const conversations = (await sGet("conversations_index")) || [];
+  return conversations.filter((conversation) => conversation.traineeId === traineeId);
+}
+
+async function saveConversationMessage(traineeId, trainerId, message) {
+  const conversations = (await sGet("conversations_index")) || [];
+  const conversationId = `${traineeId}:${trainerId}`;
+  const existing = conversations.find((conversation) => conversation.id === conversationId);
+  const nextConversation = existing
+    ? { ...existing, messages: [...existing.messages, message], updatedAt: message.createdAt }
+    : { id: conversationId, traineeId, trainerId, messages: [message], updatedAt: message.createdAt };
+  const next = existing
+    ? conversations.map((conversation) => conversation.id === conversationId ? nextConversation : conversation)
+    : [...conversations, nextConversation];
+  await sSet("conversations_index", next);
+  return nextConversation;
+}
+
+async function markConversationRead(conversationId, readerKey) {
+  const conversations = (await sGet("conversations_index")) || [];
+  const next = conversations.map((conversation) => conversation.id === conversationId
+    ? { ...conversation, messages: conversation.messages.map((message) => ({ ...message, readBy: { ...(message.readBy || {}), [readerKey]: true } })) }
+    : conversation);
+  await sSet("conversations_index", next);
+  return next.find((conversation) => conversation.id === conversationId);
+}
+
+function countUnreadMessages(conversations, sender, readerKey) {
+  return conversations.reduce((total, conversation) => total + conversation.messages.filter((message) => message.sender !== sender && !message.readBy?.[readerKey]).length, 0);
+}
+
+function useUnreadMessageCount(role, accountId) {
+  const [count, setCount] = useState(0);
+  useEffect(() => {
+    let active = true;
+    const load = async () => {
+      const all = (await sGet("conversations_index")) || [];
+      const conversations = role === "trainee"
+        ? all.filter((conversation) => conversation.traineeId === accountId)
+        : all.filter((conversation) => conversation.trainerId === accountId);
+      if (active) setCount(countUnreadMessages(conversations, role, `${role}:${accountId}`));
+    };
+    load();
+    const timer = window.setInterval(load, 3000);
+    return () => { active = false; window.clearInterval(timer); };
+  }, [role, accountId]);
+  return count;
+}
+
+function MessageAttachment({ attachment, t }) {
+  if (!attachment) return null;
+  if (attachment.type.startsWith("image/")) {
+    return <img src={attachment.dataUrl} alt={attachment.name} className="max-w-full rounded-xl mt-2" style={{ maxHeight: 180 }} />;
+  }
+  return <a href={attachment.dataUrl} download={attachment.name} className="flex items-center gap-2 mt-2 text-xs underline" aria-label={t("downloadAttachmentBtn")}><Paperclip size={14} />{attachment.name}</a>;
+}
+
+function MessageComposer({ t, color, onSend }) {
+  const [text, setText] = useState("");
+  const [attachment, setAttachment] = useState(null);
+  const [attachmentError, setAttachmentError] = useState("");
+
+  function handleFileChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    setAttachmentError("");
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      setAttachmentError(t("attachmentTooLargeMsg"));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setAttachment({ name: file.name, type: file.type || "application/octet-stream", size: file.size, dataUrl: reader.result });
+    reader.readAsDataURL(file);
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    if (!text.trim() && !attachment) return;
+    await onSend({ text: text.trim(), attachment });
+    setText("");
+    setAttachment(null);
+  }
+
+  return <form onSubmit={handleSubmit} className="p-3" style={{ borderTop: `1px solid ${COLORS.border}` }}>
+    {attachment && <div className="flex items-center justify-between gap-2 mb-2 px-3 py-2 rounded-xl text-xs" style={{ backgroundColor: COLORS.bg, color: COLORS.ink }}><span className="flex items-center gap-2 truncate"><Paperclip size={14} />{attachment.name}</span><button type="button" onClick={() => setAttachment(null)} aria-label={t("removeAttachmentBtn")}><X size={15} /></button></div>}
+    {attachmentError && <p className="text-xs mb-2" style={{ color: COLORS.danger }}>{attachmentError}</p>}
+    <div className="flex items-center gap-2">
+      <label className="p-3 rounded-xl cursor-pointer" style={{ color }} title={t("attachFileBtn")}><Paperclip size={17} /><input type="file" accept="image/*,.pdf,.doc,.docx,.txt" onChange={handleFileChange} className="hidden" /></label>
+      <input value={text} onChange={(event) => setText(event.target.value)} placeholder={t("messagePlaceholder")} className="flex-1 px-3 py-2.5 rounded-xl outline-none text-sm" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink }} />
+      <Button type="submit" color={color} className="!p-3" aria-label={t("sendMessageBtn")}><Send size={17} /></Button>
+    </div>
+  </form>;
+}
+
+function MessageBubble({ message, own, senderLabel, t }) {
+  return <div className={`max-w-[82%] px-3 py-2 rounded-2xl text-sm ${own ? "self-end" : "self-start"}`} style={{ backgroundColor: own ? COLORS.trainer : COLORS.bg, color: own ? "#fff" : COLORS.ink }}>
+    <p className="text-[11px] font-semibold mb-1" style={{ opacity: 0.72 }}>{senderLabel}</p>
+    {message.text && <p>{message.text}</p>}
+    <MessageAttachment attachment={message.attachment} t={t} />
+  </div>;
+}
+
 /* ---- Fixed internal regulations ("Vos droits et devoirs" from the official trainee
    handbook, Livret Stagiaire version E du 12/01/2024). Hardcoded on purpose — this is
    the center's official règlement intérieur and is not editable by trainers. Only
-   fr / en / ar are provided; other interface languages fall back to French. ---- */
+  fr / en / ar are official source versions; other interface languages use automatic
+  versions that must be validated by CFP02 before legal use. ---- */
 
 const RULES_TEXT = {
   fr: `VOS DROITS ET DEVOIRS
@@ -1010,6 +1326,21 @@ Li Laon hatiye amadekirin. Bi îmzekirina vê belgeyê hûn dipejirînin ku we t
 于拉昂订立。签署本文件即表示您已阅读、理解并接受本内部规章的全部内容。`,
 };
 
+// Automatic localized versions for the languages not yet covered by the official source text.
+// They are intentionally marked for CFP02 validation before being used as the legal reference.
+Object.assign(RULES_TEXT, {
+  tr: `HAKLARINIZ VE YÜKÜMLÜLÜKLERİNİZ\n\nBu otomatik çeviri, CFP02 eğitim kurallarının anlaşılmasına yardımcı olur ve resmi hukuki çeviri olarak kabul edilmemelidir. Eğitime başlayan her kursiyer bu iç yönetmeliği kabul eder.\n\nKursiyerler eğitim saatlerine, eğitmenin talimatlarına ve merkezin güvenlik, hijyen ve disiplin kurallarına uymalıdır. Alkollü içecekler, uyuşturucu maddeler, sigara ve elektronik sigara eğitim alanlarında yasaktır. Eğitim ekipmanı yalnızca eğitim amacıyla ve izin verilen yerlerde kullanılmalıdır.\n\nKursiyerler kişisel verilerin korunması, güvenlik, tahliye ve kaza bildirim kurallarına uymalıdır. Ayrımcılık yasaktır. Kurallara aykırılık geçici veya kesin uzaklaştırma dahil disiplin yaptırımlarına yol açabilir. İmzalayarak bu metni okuduğunuzu, anladığınızı ve kabul ettiğinizi beyan edersiniz.`,
+  pt: `OS SEUS DIREITOS E DEVERES\n\nEsta tradução automática ajuda a compreender as regras do CFP02 e deve ser validada pelo centro antes de ser utilizada como tradução jurídica oficial. Ao iniciar a formação, cada formando aceita este regulamento interno.\n\nOs formandos devem respeitar os horários, as instruções do formador e as regras de segurança, higiene e disciplina. Bebidas alcoólicas, drogas, tabaco e cigarros eletrónicos são proibidos nas instalações de formação. O equipamento deve ser utilizado apenas para a formação e nos locais autorizados.\n\nDevem ser respeitadas as regras de proteção de dados, segurança, evacuação e comunicação de acidentes. A discriminação é proibida. O incumprimento pode levar a sanções disciplinares, incluindo exclusão temporária ou definitiva. Ao assinar, confirma que leu, compreendeu e aceitou este regulamento.`,
+  es: `SUS DERECHOS Y OBLIGACIONES\n\nEsta traducción automática ayuda a comprender las normas del CFP02 y debe ser validada por el centro antes de utilizarse como traducción jurídica oficial. Al comenzar la formación, cada aprendiz acepta este reglamento interno.\n\nLos aprendices deben respetar los horarios, las instrucciones del formador y las normas de seguridad, higiene y disciplina. Las bebidas alcohólicas, las drogas, el tabaco y los cigarrillos electrónicos están prohibidos en los lugares de formación. El material solo debe utilizarse para la formación y en los lugares autorizados.\n\nDeben respetarse las normas de protección de datos, seguridad, evacuación y comunicación de accidentes. La discriminación está prohibida. El incumplimiento puede dar lugar a sanciones disciplinarias, incluida la exclusión temporal o definitiva. Al firmar, confirma que ha leído, comprendido y aceptado este reglamento.`,
+  prs: `حقوق و مسئولیت های شما\n\nاین ترجمه خودکار برای درک قوانین CFP02 است و باید پیش از استفاده به عنوان ترجمه رسمی حقوقی توسط مرکز بررسی شود. هر کارآموز با آغاز آموزش این مقررات داخلی را می پذیرد.\n\nکارآموزان باید ساعت های آموزش، دستورهای مربی و قوانین ایمنی، بهداشت و انضباط مرکز را رعایت کنند. مشروبات الکلی، مواد مخدر، سیگار و سیگار برقی در محل آموزش ممنوع است. وسایل آموزشی فقط برای آموزش و در مکان های مجاز استفاده می شود.\n\nقوانین حفاظت از اطلاعات شخصی، ایمنی، تخلیه و گزارش حادثه باید رعایت شود. تبعیض ممنوع است. تخلف می تواند به مجازات انضباطی، از جمله اخراج موقت یا دائمی، منجر شود. با امضا کردن تأیید می کنید که این مقررات را خوانده، فهمیده و پذیرفته اید.`,
+  fa: `حقوق و تعهدات شما\n\nاین ترجمه خودکار برای درک مقررات CFP02 است و باید پیش از استفاده به عنوان ترجمه رسمی حقوقی توسط مرکز تأیید شود. هر کارآموز با آغاز آموزش این آیین نامه داخلی را می پذیرد.\n\nکارآموزان باید ساعات آموزش، دستورهای مربی و مقررات ایمنی، بهداشت و انضباط را رعایت کنند. مشروبات الکلی، مواد مخدر، سیگار و سیگار الکترونیکی در محل آموزش ممنوع است. تجهیزات آموزشی فقط برای آموزش و در مکان های مجاز استفاده می شوند.\n\nمقررات حفاظت از اطلاعات شخصی، ایمنی، تخلیه و گزارش حادثه باید رعایت شود. تبعیض ممنوع است. تخلف می تواند به مجازات انضباطی، از جمله اخراج موقت یا دائمی، منجر شود. با امضا تأیید می کنید که این مقررات را خوانده، فهمیده و پذیرفته اید.`,
+  ru: `ВАШИ ПРАВА И ОБЯЗАННОСТИ\n\nЭтот автоматический перевод помогает понять правила CFP02 и должен быть проверен центром до использования в качестве официального юридического перевода. Каждый стажёр, начиная обучение, принимает настоящий внутренний распорядок.\n\nСтажёры обязаны соблюдать расписание, инструкции наставника и правила безопасности, гигиены и дисциплины. Алкоголь, наркотики, курение и электронные сигареты запрещены в учебных помещениях. Оборудование используется только для обучения и в разрешённых местах.\n\nНеобходимо соблюдать правила защиты персональных данных, безопасности, эвакуации и сообщения о несчастных случаях. Дискриминация запрещена. Нарушение может привести к дисциплинарным мерам, включая временное или окончательное исключение. Подписывая документ, вы подтверждаете, что прочитали, поняли и приняли этот распорядок.`,
+  uk: `ВАШІ ПРАВА ТА ОБОВ'ЯЗКИ\n\nЦей автоматичний переклад допомагає зрозуміти правила CFP02 і має бути перевірений центром перед використанням як офіційний юридичний переклад. Кожен стажер, починаючи навчання, приймає ці внутрішні правила.\n\nСтажери повинні дотримуватися розкладу, інструкцій тренера та правил безпеки, гігієни й дисципліни. Алкоголь, наркотики, куріння та електронні сигарети заборонені в навчальних приміщеннях. Обладнання використовується лише для навчання та в дозволених місцях.\n\nПотрібно дотримуватися правил захисту персональних даних, безпеки, евакуації та повідомлення про нещасні випадки. Дискримінація заборонена. Порушення може призвести до дисциплінарних заходів, включно з тимчасовим або остаточним виключенням. Підпис підтверджує, що ви прочитали, зрозуміли та прийняли ці правила.`,
+  ku: `ماف و پابەندییەکانت\n\nئەم وەرگێڕانی خۆکارە بۆ تێگەیشتن لە یاساکانی CFP02 ـە و پێویستە ناوەندەکە پێش بەکارهێنان وەک وەرگێڕانی یاسایی فەرمی پشکنینی بکات. هەر فێرخوازێک لە دەستپێکردنی فێرکاری ئەم ڕێسای ناوخۆییە قبوڵ دەکات.\n\nفێرخوازان دەبێت کاتی فێرکاری، ڕێنمایی ڕاهێنەر و یاساکانی سەلامەتی، پاکوخاوێنی و دیسپلین ڕەچاو بکەن. مەی، مادەی هۆشبەر، جگەرە و جگەرەی ئەلیکترۆنی لە شوێنی فێرکاری قەدەغەیە. کەرەستەی فێرکاری تەنها بۆ فێرکاری و لە شوێنی ڕێپێدراو بەکاردێت.\n\nیاساکانی پاراستنی داتا، سەلامەتی، دەرچوون لە کاتی مەترسی و ڕاگەیاندنی ڕووداو دەبێت ڕەچاو بکرێن. جیاکاری قەدەغەیە. پێشێلکردن دەتوانێت ببێتە هۆی سزا، لەوانە دەرکردنی کاتی یان هەمیشەیی. واژۆکردن پشتڕاست دەکاتەوە کە ئەم ڕێسایەت خوێندووەتەوە و قبوڵت کردووە.`,
+  zh: `您的权利和义务\n\n本自动翻译用于帮助理解 CFP02 的规定，在作为正式法律翻译使用前必须由中心审核。每位学员开始培训即表示接受本内部规章。\n\n学员必须遵守培训时间、培训师指示以及安全、卫生和纪律规定。培训场所禁止酒精、毒品、吸烟和电子烟。培训设备只能用于培训，并只能在获准的地点使用。\n\n学员必须遵守个人数据保护、安全、疏散和事故报告规定。禁止歧视。违反规定可能受到纪律处分，包括临时或永久取消培训资格。签名表示您已阅读、理解并接受本规章。`,
+  krl: `MAF Û BERPIYARÊN TE\n\nEv wergera bixweber ji bo têgihiştina rêgezên CFP02 e û divê navendê berî bikaranîna wê wek wergera fermî ya yasayî piştrast bike. Her stajyer bi destpêkirina perwerdeyê vê rêgeza hundirîn qebûl dike.\n\nStajyer divê demên perwerdeyê, rêberiyên perwerdekar û rêgezên ewlehî, paqijî û dîsîplînê bi cih bîne. Alkol, madeyên hişber, cixare û cixareya elektronîk li cihê perwerdeyê qedexe ne. Amûrên perwerdeyê tenê ji bo perwerdeyê û li cihên destûrdayî tên bikaranîn.\n\nRêgezên parastina daneyan, ewlehî, vala kirin û ragihandina qezayan divê bên rêz kirin. Cudahî qedexe ye. Binpêkirin dikare bibe sedema cezayên dîsîplînê, di nav de derxistina demkî an herdemî. Bi îmzekirinê tu piştrast dikî ku te ev rêgez xwendiye, fêm kiriye û qebûl kiriye.`
+});
+
 /* ---- Extra fixed handbook sections (pages 6-20 and 40-48 of the official Livret
    Stagiaire, version F du 25/04/24). Hardcoded and read-only, same as RULES_TEXT
    above — these are the reference/context pages of the handbook (not the working
@@ -1161,18 +1492,13 @@ const HANDBOOK_SECTIONS = {
 };
 
 
-/* Internal regulations text in the trainee's language (display only).
-   Falls back to French when no translation exists. */
+/* Internal regulations text in the trainee's selected language. */
 function getRegulationsText(lang) {
   return RULES_TEXT[lang] || RULES_TEXT.fr;
 }
 
 function getHandbookSections(lang) {
-  const order = [lang, "fr", "ar", "en"];
-  let base = HANDBOOK_SECTIONS.fr;
-  for (const code of order) {
-    if (HANDBOOK_SECTIONS[code] && HANDBOOK_SECTIONS[code].length) { base = HANDBOOK_SECTIONS[code]; break; }
-  }
+  const base = HANDBOOK_SECTIONS[lang] || HANDBOOK_SECTIONS.fr;
   // If the handbook itself is only available in French but the regulations exist
   // in the trainee's language, show the translated regulations section.
   if (!HANDBOOK_SECTIONS[lang] && RULES_TEXT[lang]) {
@@ -1515,7 +1841,11 @@ function LoginFlow({ onLogin }) {
   const [birthDate, setBirthDate] = useState("");
   const [group, setGroup] = useState("");
   const [pin, setPin] = useState("");
+  const [trainerLoginName, setTrainerLoginName] = useState("");
   const [trainerPin, setTrainerPin] = useState("");
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [recoveryName, setRecoveryName] = useState("");
+  const [recoveryMsg, setRecoveryMsg] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   const [groupsList, setGroupsList] = useState([]);
@@ -1554,8 +1884,12 @@ function LoginFlow({ onLogin }) {
       const birthDateVal = (birthDateRef.current && birthDateRef.current.value) || "";
       setFirstName(firstNameVal); setLastName(lastNameVal); setBirthDate(birthDateVal);
       const nameVal = `${firstNameVal.trim()} ${lastNameVal.trim()}`.trim();
-      if (!firstNameVal.trim() || !lastNameVal.trim() || !birthDateVal.trim() || !groupVal.trim() || pinVal.trim().length !== 4) {
+      if (!firstNameVal.trim() || !lastNameVal.trim() || !birthDateVal.trim() || !groupVal.trim()) {
         setError(t("errorFillFields"));
+        return;
+      }
+      if (!isTraineeCodeValid(pinVal.trim())) {
+        setError(t("traineeCodeFormatMsg"));
         return;
       }
       const exists = idx.find((x) => norm(x.name) === norm(nameVal) && norm(x.group) === norm(groupVal));
@@ -1574,11 +1908,10 @@ function LoginFlow({ onLogin }) {
         const next = [...idx, rec];
         await sSet("trainees_index", next);
 
-        // The legally binding signed version is always the French text,
-        // whatever language the trainee read it in.
-        const rulesText = getRulesTextForLang("fr");
+        // Store the same language version that the trainee read and accepted.
+        const rulesText = getRulesTextForLang(lang);
         const signedAt = Date.now();
-        await saveSignedRulesAck(rec.id, dk, { lang, readLang: lang, signedLang: "fr", rulesText, signatureDataUrl, signedAt });
+        await saveSignedRulesAck(rec.id, dk, { lang, readLang: lang, signedLang: lang, rulesText, signatureDataUrl, signedAt });
 
         setBusy(false);
         onLogin({ type: "trainee", ...rec, dk });
@@ -1607,11 +1940,24 @@ function LoginFlow({ onLogin }) {
           await sSet("trainees_index", updated);
         }
         setBusy(false);
-        onLogin({ type: "trainee", ...found, lang, dk });
+        onLogin({ type: "trainee", ...found, lang, dk, mustChangeCode: Boolean(found.mustChangeCode) || !isTraineeCodeValid(pinVal.trim()) });
       } catch (e) {
         setBusy(false);
         setError(t("errorWrongPin"));
       }
+    }
+  }
+
+  async function handleRecoveryRequest() {
+    setError("");
+    setRecoveryMsg("");
+    if (!recoveryName.trim()) { setError(t("errorFillFields")); return; }
+    try {
+      await requestTrainerCodeRecovery(recoveryName);
+      setRecoveryMsg(t("recoveryRequestedMsg"));
+      setRecoveryName("");
+    } catch (e) {
+      setError(t("errorNotFound"));
     }
   }
 
@@ -1622,7 +1968,7 @@ function LoginFlow({ onLogin }) {
     setBusy(true);
     try {
       await ensureBootstrap();
-      const found = await findTrainerSessionByPin(trainerPinVal.trim());
+      const found = await findTrainerSessionByPin(trainerLoginName, trainerPinVal.trim());
       setBusy(false);
       if (!found) {
         setError(t("errorWrongPin"));
@@ -1635,6 +1981,10 @@ function LoginFlow({ onLogin }) {
         trainerName: found.trainer.name,
         role: found.trainer.role,
         groupNames: found.trainer.groupNames || [],
+        mustChangeCode: Boolean(found.trainer.mustChangeCode) || (found.trainer.role !== "admin" && !isStaffCodeValid(trainerPinVal.trim())),
+        avatarDataUrl: found.trainer.avatarDataUrl || "",
+        email: found.trainer.email || "",
+        profilePhrase: found.trainer.profilePhrase || "",
         trainerPrivateKey: found.privateKey,
       });
     } catch (e) {
@@ -1688,7 +2038,7 @@ function LoginFlow({ onLogin }) {
               <h2 className="text-[15px] font-medium mb-4" style={{ color: COLORS.inkSoft }}>{t("roleQuestion")}</h2>
               <div className="flex flex-col gap-3">
                 <button
-                  onClick={() => setStep("traineeMode")}
+                  onClick={() => { setTraineeMode("existing"); setStep("traineeForm"); }}
                   className="p-4 rounded-xl flex items-center gap-3 text-start transition active:scale-[0.98]"
                   style={{ border: `1.5px solid ${COLORS.border}` }}
                 >
@@ -1708,6 +2058,7 @@ function LoginFlow({ onLogin }) {
                   <span className="font-medium" style={{ color: COLORS.ink }}>{t("roleTrainer")}</span>
                 </button>
               </div>
+              <p className="text-xs mt-4" style={{ color: COLORS.inkSoft }}>{t("closedRegistrationMsg")}</p>
             </>
           )}
 
@@ -1826,8 +2177,7 @@ function LoginFlow({ onLogin }) {
                 ref={pinRef}
                 label={t("pinLabel")}
                 value={pin}
-                onChange={(e) => setPin(e.target.value.replace(/\D/g, "").slice(0, traineeMode === "new" ? 4 : 6))}
-                inputMode="numeric"
+                onChange={(e) => setPin(e.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 5))}
                 type="password"
                 autoComplete="off"
               />
@@ -1848,28 +2198,35 @@ function LoginFlow({ onLogin }) {
               <button onClick={() => { setError(""); setStep("role"); }} className="flex items-center gap-1 text-sm mb-4" style={{ color: COLORS.inkSoft }}>
                 <ChevronLeft size={16} /> {t("backBtn")}
               </button>
-              <TextInput
-                ref={trainerPinRef}
-                label={t("trainerPinLabel")}
-                value={trainerPin}
-                onChange={(e) => setTrainerPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !busy) handleTrainerSubmit();
-                }}
-                inputMode="numeric"
-                type="password"
-                autoComplete="off"
-                autoFocus
-              />
-
-              {error && (
-                <div className="flex items-center gap-2 mb-1 text-sm" style={{ color: COLORS.danger }}>
-                  <AlertCircle size={16} /> {error}
-                </div>
+              {recoveryMode ? (
+                <>
+                  <TextInput label={t("recoveryNameLabel")} value={recoveryName} onChange={(e) => setRecoveryName(e.target.value)} autoComplete="name" autoFocus />
+                  {recoveryMsg && <p className="text-sm mb-3" style={{ color: COLORS.rules }}>{recoveryMsg}</p>}
+                  <Button className="w-full" onClick={handleRecoveryRequest}>{t("forgotCodeBtn")}</Button>
+                  <button type="button" onClick={() => { setRecoveryMode(false); setError(""); setRecoveryMsg(""); }} className="w-full mt-3 text-sm" style={{ color: COLORS.inkSoft }}>{t("backBtn")}</button>
+                </>
+              ) : (
+                <>
+                  <TextInput label={t("trainerLoginNameLabel")} value={trainerLoginName} onChange={(e) => setTrainerLoginName(e.target.value)} autoComplete="username" autoFocus />
+                  <TextInput
+                    ref={trainerPinRef}
+                    label={t("trainerPinLabel")}
+                    value={trainerPin}
+                    onChange={(e) => setTrainerPin(e.target.value.slice(0, 12))}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" && !busy) handleTrainerSubmit();
+                    }}
+                    type="password"
+                    autoComplete="off"
+                  />
+                  {error && <div className="flex items-center gap-2 mb-1 text-sm" style={{ color: COLORS.danger }}><AlertCircle size={16} /> {error}</div>}
+                  <Button className="w-full" onClick={handleTrainerSubmit} disabled={busy}>
+                    {busy ? <Loader2 className="animate-spin" size={18} /> : t("trainerLoginBtn")}
+                  </Button>
+                  <button type="button" onClick={() => { setRecoveryMode(true); setError(""); }} className="w-full mt-3 text-sm" style={{ color: COLORS.inkSoft }}>{t("forgotCodeBtn")}</button>
+                </>
               )}
-              <Button className="w-full" onClick={handleTrainerSubmit} disabled={busy}>
-                {busy ? <Loader2 className="animate-spin" size={18} /> : t("trainerLoginBtn")}
-              </Button>
+
             </>
           )}
         </Card>
@@ -1882,13 +2239,14 @@ function LoginFlow({ onLogin }) {
 
 function RulesView({ lang, t, traineeId, dk, traineeName, group }) {
   const [showHandbook, setShowHandbook] = useState(false);
+  const [rulesLang, setRulesLang] = useState(RULES_TEXT[lang] ? lang : "fr");
   const [ack, setAck] = useState(undefined);
   useEffect(() => {
     if (!traineeId || !dk) return;
     (async () => setAck(await loadSignedRulesAck(traineeId, dk)))();
   }, [traineeId, dk]);
 
-  const sections = getHandbookSections(lang);
+  const sections = [{ heading: t("rulesHeading"), body: getRegulationsText(rulesLang) }];
 
   if (showHandbook) {
     return <HandbookViewer t={t} onClose={() => setShowHandbook(false)} />;
@@ -1931,26 +2289,138 @@ function RulesView({ lang, t, traineeId, dk, traineeName, group }) {
         </Card>
       )}
 
-      <HandbookSections sections={sections} t={t} />
+      <Card className="p-4 mt-4">
+        <label className="block"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("rulesLanguageLabel")}</span><select value={rulesLang} onChange={(event) => { setRulesLang(event.target.value); }} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{Object.keys(RULES_TEXT).map((code) => <option key={code} value={code}>{LANGS.find((item) => item.code === code)?.label || code}</option>)}</select></label>
+      </Card>
+      <SpeechRules sections={sections} lang={rulesLang} t={t} />
     </div>
   );
 }
 
-function HandbookSections({ sections, t }) {
+function SpeechRules({ sections, lang, t }) {
+  const [speechLang, setSpeechLang] = useState(lang);
+  const [currentIndex, setCurrentIndex] = useState(-1);
+  const [playing, setPlaying] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [audioUrl, setAudioUrl] = useState("");
+  const [error, setError] = useState(false);
+  const audioRef = useRef(null);
+  const sequence = useMemo(() => sections.flatMap((section, sectionIndex) => {
+    const parts = [section.body, ...(section.numbered || []), ...(section.items || [])].filter(Boolean);
+    return parts.flatMap((part, partIndex) => part.split(/(?<=[.!?؟。])\s+/).filter(Boolean).map((text) => ({ sectionIndex, partIndex, text })));
+  }), [sections]);
+
+  useEffect(() => {
+    setSpeechLang(lang);
+    setCurrentIndex(-1);
+    setPlaying(false);
+    setPaused(false);
+    setAudioUrl("");
+    audioRef.current?.pause();
+  }, [lang]);
+
+  useEffect(() => {
+    return () => {
+      audioRef.current?.pause();
+    };
+  }, []);
+
+  async function start() {
+    if (!sequence.length || loading) return;
+    audioRef.current?.pause();
+    setError(false);
+    setLoading(true);
+    setCurrentIndex(0);
+    try {
+      const response = await fetch("/api/tts", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ text: sequence.map((item) => item.text).join("\n\n"), language: speechLang }),
+      });
+      if (!response.ok) throw new Error("TTS request failed");
+      const blob = await response.blob();
+      const nextUrl = URL.createObjectURL(blob);
+      setAudioUrl(nextUrl);
+      setPlaying(true);
+      setPaused(false);
+    } catch {
+      setError(true);
+      setPlaying(false);
+      setCurrentIndex(-1);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleTimeUpdate() {
+    const audio = audioRef.current;
+    if (!audio || !audio.duration || !sequence.length) return;
+    const progress = Math.min(audio.currentTime / audio.duration, 0.999999);
+    const index = Math.floor(progress * sequence.length);
+    setCurrentIndex(index);
+  }
+
+  function handleEnded() {
+    setPlaying(false);
+    setPaused(false);
+    setCurrentIndex(-1);
+  }
+
+  function pause() {
+    if (!playing) return;
+    audioRef.current?.pause();
+    setPaused(true);
+  }
+
+  function resume() {
+    if (!audioRef.current || !audioUrl) return start();
+    audioRef.current.play().catch(() => setError(true));
+    setPaused(false);
+  }
+
+  function stop() {
+    audioRef.current?.pause();
+    if (audioUrl) URL.revokeObjectURL(audioUrl);
+    setAudioUrl("");
+    setPaused(false);
+    setPlaying(false);
+    setCurrentIndex(-1);
+  }
+
+  const activeText = currentIndex >= 0 ? sequence[currentIndex]?.text : "";
+  return <>
+    <audio ref={audioRef} src={audioUrl || undefined} onTimeUpdate={handleTimeUpdate} onEnded={handleEnded} onPlay={() => setPlaying(true)} onPause={() => { if (audioRef.current?.ended) return; setPaused(true); }} preload="auto" />
+    <Card className="p-4 mt-4">
+      <div className="flex flex-col sm:flex-row sm:items-end gap-3">
+        <label className="flex-1"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("speechLanguageLabel")}</span><select value={speechLang} onChange={(event) => { stop(); setSpeechLang(event.target.value); }} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{LANGS.map((item) => <option key={item.code} value={item.code}>{item.label}</option>)}</select></label>
+        <div className="flex gap-2 flex-wrap">
+          <Button color={COLORS.rules} onClick={start} disabled={loading || !sequence.length}><Volume2 size={17} /> {loading ? t("loadingMsg") : t("listenRules")}</Button>
+          <button type="button" onClick={paused ? resume : pause} disabled={!playing} className="p-3 rounded-xl" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink }} aria-label={paused ? t("speechResume") : t("speechPause")}>{paused ? <Play size={18} /> : <Pause size={18} />}</button>
+          <button type="button" onClick={stop} disabled={!playing} className="p-3 rounded-xl" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink }} aria-label={t("speechStop")}><Square size={17} /></button>
+        </div>
+      </div>
+      {error && <p className="text-xs mt-2" style={{ color: COLORS.danger }}>{t("speechUnavailable")}</p>}
+    </Card>
+    <HandbookSections sections={sections} t={t} activeText={activeText} />
+  </>;
+}
+
+function HandbookSections({ sections, t, activeText = "" }) {
   return (
     <div className="flex flex-col gap-3 mt-4">
       {sections.map((s, i) => (
         <Card key={i} className="p-5">
           <h3 className="font-semibold text-[15.5px] mb-2" style={{ color: COLORS.rules }}>{s.heading}</h3>
-          {s.body && <div className="whitespace-pre-wrap leading-relaxed text-[15px]" style={{ color: COLORS.ink }}>{s.body}</div>}
+          {s.body && <div className="whitespace-pre-wrap leading-relaxed text-[15px]" style={{ color: COLORS.ink }}>{highlightSpeechText(s.body, activeText)}</div>}
           {s.numbered && (
             <ol className="list-decimal ms-5 mt-2 flex flex-col gap-1.5 text-[15px]" style={{ color: COLORS.ink }}>
-              {s.numbered.map((x, j) => <li key={j}>{x}</li>)}
+              {s.numbered.map((x, j) => <li key={j}>{highlightSpeechText(x, activeText)}</li>)}
             </ol>
           )}
           {s.items && (
             <ul className="list-disc ms-5 mt-2 flex flex-col gap-1.5 text-[15px]" style={{ color: COLORS.ink }}>
-              {s.items.map((x, j) => <li key={j}>{x}</li>)}
+              {s.items.map((x, j) => <li key={j}>{highlightSpeechText(x, activeText)}</li>)}
             </ul>
           )}
           {s.sites && (
@@ -1969,6 +2439,12 @@ function HandbookSections({ sections, t }) {
       ))}
     </div>
   );
+}
+
+function highlightSpeechText(text, activeText) {
+  if (!activeText || !text.includes(activeText)) return text;
+  const parts = text.split(activeText);
+  return parts.flatMap((part, index) => index === parts.length - 1 ? [part] : [part, <mark key={`${activeText}-${index}`} className="rounded px-0.5" style={{ backgroundColor: COLORS.orange + "66", color: COLORS.ink }}>{activeText}</mark>]);
 }
 
 /* ============================== Partie Pro (fillable forms, pages 25-36) ==============================
@@ -2853,25 +3329,214 @@ function ActivityView({ traineeId, dk, t }) {
   );
 }
 
+function AccountAvatar({ src, size = 40 }) {
+  return src
+    ? <img src={src} alt="" className="rounded-full object-cover" style={{ width: size, height: size }} />
+    : <div className="rounded-full flex items-center justify-center" style={{ width: size, height: size, backgroundColor: COLORS.trainer + "20", color: COLORS.trainer }}><User size={size * 0.45} /></div>;
+}
+
+function ProfileView({ account, role, t }) {
+  const [profile, setProfile] = useState({
+    avatarDataUrl: account.avatarDataUrl || "",
+    email: account.email || "",
+    profilePhrase: account.profilePhrase || "",
+  });
+  const [saved, setSaved] = useState(false);
+  const [photoError, setPhotoError] = useState("");
+
+  function handlePhotoChange(event) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    setPhotoError("");
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      setPhotoError(t("attachmentTooLargeMsg"));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setProfile((current) => ({ ...current, avatarDataUrl: reader.result }));
+    reader.readAsDataURL(file);
+  }
+
+  async function handleSave(event) {
+    event.preventDefault();
+    const next = role === "trainee"
+      ? await updateTraineeProfile(account.id, profile)
+      : await updateTrainerProfile(account.trainerId, profile);
+    if (next) setProfile({ avatarDataUrl: next.avatarDataUrl || "", email: next.email || "", profilePhrase: next.profilePhrase || "" });
+    setSaved(true);
+    window.setTimeout(() => setSaved(false), 2500);
+  }
+
+  return <div>
+    <SectionHeader icon={<User size={20} color="#fff" />} color={COLORS.trainer} title={t("profileHeading")} />
+    <form onSubmit={handleSave} className="flex flex-col gap-4 mt-4">
+      <Card className="p-5">
+        <div className="flex items-center gap-4">
+          <AccountAvatar src={profile.avatarDataUrl} size={72} />
+          <div>
+            <p className="font-medium" style={{ color: COLORS.ink }}>{t("profilePhotoLabel")}</p>
+            <label className="inline-flex items-center gap-2 mt-2 px-3 py-2 rounded-xl text-sm cursor-pointer" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink }}>
+              <Camera size={16} /> {t("profilePhotoBtn")}
+              <input type="file" accept="image/*" onChange={handlePhotoChange} className="hidden" />
+            </label>
+            {photoError && <p className="text-xs mt-2" style={{ color: COLORS.danger }}>{photoError}</p>}
+          </div>
+        </div>
+      </Card>
+      <Card className="p-5">
+        <TextInput label={t("profileEmailLabel")} type="email" value={profile.email} onChange={(event) => setProfile((current) => ({ ...current, email: event.target.value }))} autoComplete="email" />
+        <label className="block">
+          <span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("profilePhraseLabel")}</span>
+          <textarea value={profile.profilePhrase} onChange={(event) => setProfile((current) => ({ ...current, profilePhrase: event.target.value.slice(0, 160) }))} placeholder={t("profilePhrasePlaceholder")} rows={3} className="w-full px-4 py-3 rounded-xl outline-none text-[16px] resize-none" style={{ border: `1.5px solid ${COLORS.border}`, backgroundColor: "#fff", color: COLORS.ink }} />
+        </label>
+        <div className="flex items-center gap-3 mt-4">
+          <Button type="submit" color={COLORS.trainer}>{t("saveProfileBtn")}</Button>
+          {saved && <span className="flex items-center gap-1 text-sm" style={{ color: COLORS.rules }}><Check size={16} />{t("profileSavedMsg")}</span>}
+        </div>
+      </Card>
+    </form>
+  </div>;
+}
+
+function TraineeCodeChangeView({ session, t, onComplete }) {
+  const [code, setCode] = useState("");
+  const [confirmCode, setConfirmCode] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function handleSave(event) {
+    event.preventDefault();
+    setError("");
+    if (!isTraineeCodeValid(code)) { setError(t("traineeCodeFormatMsg")); return; }
+    if (code !== confirmCode) { setError(t("errorFillFields")); return; }
+    setBusy(true);
+    await changeTraineeAccessCode(session.id, session.dk, code);
+    setBusy(false);
+    onComplete();
+  }
+
+  return <div dir={(LANGS.find((lang) => lang.code === session.lang) || LANGS[0]).dir} className="min-h-screen flex items-center justify-center p-5" style={{ backgroundColor: COLORS.bg, fontFamily: "'Noto Sans','Noto Sans Arabic','Noto Sans SC',sans-serif" }}>
+    <Card className="w-full max-w-md p-5">
+      <div className="flex items-center gap-3 mb-5"><AccountAvatar src={session.avatarDataUrl} size={48} /><div><p className="text-sm" style={{ color: COLORS.inkSoft }}>{session.name}</p><h1 className="text-xl font-semibold" style={{ color: COLORS.ink }}>{t("changeCodeHeading")}</h1></div></div>
+      <p className="text-sm mb-5" style={{ color: COLORS.inkSoft }}>{t("changeCodeHelp")}</p>
+      <form onSubmit={handleSave}>
+        <TextInput label={t("pinLabel")} value={code} onChange={(event) => setCode(event.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 5))} type="password" autoComplete="new-password" autoFocus />
+        <TextInput label={t("newPinLabel")} value={confirmCode} onChange={(event) => setConfirmCode(event.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 5))} type="password" autoComplete="new-password" />
+        {error && <div className="flex items-center gap-2 mb-4 text-sm" style={{ color: COLORS.danger }}><AlertCircle size={16} />{error}</div>}
+        <Button type="submit" color={COLORS.trainer} className="w-full" disabled={busy}>{busy ? <Loader2 className="animate-spin" size={18} /> : t("saveProfileBtn")}</Button>
+      </form>
+    </Card>
+  </div>;
+}
+
+function TrainerCodeChangeView({ session, t, onComplete }) {
+  const [code, setCode] = useState("");
+  const [confirmCode, setConfirmCode] = useState("");
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function handleSave(event) {
+    event.preventDefault();
+    setError("");
+    if (!isStaffCodeValid(code)) { setError(t("codeFormatMsg")); return; }
+    if (code !== confirmCode) { setError(t("errorFillFields")); return; }
+    setBusy(true);
+    await changeTrainerAccessCode(session.trainerId, session.trainerPrivateKey, code);
+    setBusy(false);
+    onComplete();
+  }
+
+  return <div dir={(LANGS.find((lang) => lang.code === session.lang) || LANGS[0]).dir} className="min-h-screen flex items-center justify-center p-5" style={{ backgroundColor: COLORS.bg, fontFamily: "'Noto Sans','Noto Sans Arabic','Noto Sans SC',sans-serif" }}>
+    <Card className="w-full max-w-md p-5">
+      <div className="flex items-center gap-3 mb-5"><AccountAvatar src={session.avatarDataUrl} size={48} /><div><p className="text-sm" style={{ color: COLORS.inkSoft }}>{session.trainerName}</p><h1 className="text-xl font-semibold" style={{ color: COLORS.ink }}>{t("changeCodeHeading")}</h1></div></div>
+      <p className="text-sm mb-5" style={{ color: COLORS.inkSoft }}>{t("codeFormatMsg")}</p>
+      <form onSubmit={handleSave}>
+        <TextInput label={t("trainerPinLabel")} value={code} onChange={(event) => setCode(event.target.value.slice(0, 12))} type="password" autoComplete="new-password" autoFocus />
+        <TextInput label={t("newPinLabel")} value={confirmCode} onChange={(event) => setConfirmCode(event.target.value.slice(0, 12))} type="password" autoComplete="new-password" />
+        {error && <div className="flex items-center gap-2 mb-4 text-sm" style={{ color: COLORS.danger }}><AlertCircle size={16} />{error}</div>}
+        <Button type="submit" color={COLORS.trainer} className="w-full" disabled={busy}>{busy ? <Loader2 className="animate-spin" size={18} /> : t("saveProfileBtn")}</Button>
+      </form>
+    </Card>
+  </div>;
+}
+
+function TraineeRulesAcceptanceView({ session, t, onComplete }) {
+  const [rulesLang, setRulesLang] = useState(session.lang || "fr");
+  const [checked, setChecked] = useState(false);
+  const [signatureDataUrl, setSignatureDataUrl] = useState(null);
+  const [error, setError] = useState("");
+  const signaturePadRef = useRef(null);
+  const sections = [{ heading: t("rulesHeading"), body: getRegulationsText(rulesLang) }];
+
+  async function handleAccept() {
+    if (!checked || !signatureDataUrl) {
+      setError(t("mustAcceptRulesMsg"));
+      return;
+    }
+    await saveSignedRulesAck(session.id, session.dk, {
+      lang: rulesLang,
+      readLang: rulesLang,
+      signedLang: rulesLang,
+      rulesText: getRegulationsText(rulesLang),
+      signatureDataUrl,
+      signedAt: Date.now(),
+    });
+    onComplete();
+  }
+
+  return <div dir={(LANGS.find((item) => item.code === session.lang) || LANGS[0]).dir} className="min-h-screen p-5" style={{ backgroundColor: COLORS.bg, fontFamily: "'Noto Sans','Noto Sans Arabic','Noto Sans SC',sans-serif" }}>
+    <div className="max-w-2xl mx-auto">
+      <Card className="p-5">
+        <h1 className="text-xl font-semibold mb-2" style={{ color: COLORS.ink }}>{t("rulesAcceptanceRequiredHeading")}</h1>
+        <p className="text-sm mb-4" style={{ color: COLORS.inkSoft }}>{t("rulesAcceptanceRequiredMsg")}</p>
+        <label className="block mb-4"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("rulesLanguageLabel")}</span><select value={rulesLang} onChange={(event) => setRulesLang(event.target.value)} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{Object.keys(RULES_TEXT).map((code) => <option key={code} value={code}>{LANGS.find((item) => item.code === code)?.label || code}</option>)}</select></label>
+        <div className="rounded-xl p-4 mb-4 max-h-[45vh] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed" style={{ border: `1px solid ${COLORS.border}`, backgroundColor: "#fff", color: COLORS.ink }}>{getRegulationsText(rulesLang)}</div>
+        <SpeechRules sections={sections} lang={rulesLang} t={t} />
+        <label className="flex items-start gap-2 mt-5 mb-4 text-sm" style={{ color: COLORS.ink }}><input type="checkbox" className="mt-1" checked={checked} onChange={(event) => setChecked(event.target.checked)} /><span>{t("acceptRulesLabel")}</span></label>
+        <span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("signatureLabel")}</span>
+        <SignaturePad ref={signaturePadRef} onChange={setSignatureDataUrl} />
+        <div className="flex justify-end mt-2 mb-4"><button onClick={() => signaturePadRef.current?.clear()} className="text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("clearSignatureBtn")}</button></div>
+        {error && <div className="flex items-center gap-2 mb-4 text-sm" style={{ color: COLORS.danger }}><AlertCircle size={16} />{error}</div>}
+        <Button color={COLORS.rules} className="w-full" onClick={handleAccept}>{t("continueBtn")}</Button>
+      </Card>
+    </div>
+  </div>;
+}
+
 /* ============================== Trainee App ============================== */
 
 function TraineeApp({ session, onLogout }) {
   const [tab, setTab] = useState("rules");
+  const [mustChangeCode, setMustChangeCode] = useState(Boolean(session.mustChangeCode));
+  const [rulesAcceptance, setRulesAcceptance] = useState(undefined);
+  const hasProfessionalPathway = session.learningPath !== "linguistic";
+  const unreadMessages = useUnreadMessageCount("trainee", session.id);
   const langMeta = LANGS.find((l) => l.code === session.lang) || LANGS[0];
   const t = useT(session.lang);
 
+  useEffect(() => {
+    loadSignedRulesAck(session.id, session.dk).then((ack) => setRulesAcceptance(Boolean(ack)));
+  }, [session.id, session.dk]);
+
+  if (mustChangeCode) return <TraineeCodeChangeView session={session} t={t} onComplete={() => setMustChangeCode(false)} />;
+  if (rulesAcceptance === undefined) return <LoadingBlock t={t} />;
+  if (!rulesAcceptance) return <TraineeRulesAcceptanceView session={session} t={t} onComplete={() => setRulesAcceptance(true)} />;
+
   const tabs = [
     { key: "rules", label: t("navRules"), icon: BookOpen, color: COLORS.rules },
-    { key: "pro", label: t("proHeading"), icon: Building2, color: COLORS.rules },
+    ...(hasProfessionalPathway ? [{ key: "pro", label: t("proHeading"), icon: Building2, color: COLORS.rules }] : []),
     { key: "documents", label: t("navDocuments"), icon: FileText, color: COLORS.docs },
     { key: "activity", label: t("navActivity"), icon: ClipboardList, color: COLORS.activity },
+    { key: "messages", label: t("navMessages"), icon: MessageCircle, color: COLORS.trainer },
+    { key: "profile", label: t("navProfile"), icon: User, color: COLORS.ink },
   ];
 
   return (
     <div dir={langMeta.dir} className="min-h-screen pb-24" style={{ backgroundColor: COLORS.bg, fontFamily: "'Noto Sans','Noto Sans Arabic','Noto Sans SC',sans-serif" }}>
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <OrgMark size={38} />
+          <AccountAvatar src={session.avatarDataUrl} size={38} />
           <div>
             <p className="text-sm" style={{ color: COLORS.inkSoft }}>{session.group}</p>
             <h1 className="text-xl font-semibold" style={{ color: COLORS.ink }}>{session.name}</h1>
@@ -2884,9 +3549,11 @@ function TraineeApp({ session, onLogout }) {
 
       <main className="px-5">
         {tab === "rules" && <RulesView lang={session.lang} t={t} traineeId={session.id} dk={session.dk} traineeName={session.name} group={session.group} />}
-        {tab === "pro" && <ProView traineeId={session.id} dk={session.dk} t={t} readOnly={false} />}
+        {tab === "pro" && hasProfessionalPathway && <ProView traineeId={session.id} dk={session.dk} t={t} readOnly={false} />}
         {tab === "documents" && <DocumentsView traineeId={session.id} dk={session.dk} t={t} />}
         {tab === "activity" && <ActivityView traineeId={session.id} dk={session.dk} t={t} />}
+        {tab === "messages" && <MessagesView traineeId={session.id} t={t} />}
+        {tab === "profile" && <ProfileView account={session} role="trainee" t={t} />}
       </main>
 
       <nav className="fixed bottom-0 left-0 right-0 px-4 pb-4 pt-2">
@@ -2898,11 +3565,12 @@ function TraineeApp({ session, onLogout }) {
               <button
                 key={tb.key}
                 onClick={() => setTab(tb.key)}
-                className="flex-1 flex flex-col items-center gap-1 py-3 transition"
+                className="relative flex-1 flex flex-col items-center gap-1 py-3 transition"
                 style={{ backgroundColor: active ? tb.color + "14" : "transparent" }}
               >
                 <Icon size={20} color={active ? tb.color : COLORS.inkSoft} />
                 <span className="text-[11px] font-medium" style={{ color: active ? tb.color : COLORS.inkSoft }}>{tb.label}</span>
+                {tb.key === "messages" && unreadMessages > 0 && <span className="absolute top-1 right-1/4 min-w-4 h-4 px-1 rounded-full text-[10px] leading-4 font-bold" style={{ backgroundColor: COLORS.danger, color: "#fff" }}>{unreadMessages > 9 ? "9+" : unreadMessages}</span>}
               </button>
             );
           })}
@@ -2912,32 +3580,323 @@ function TraineeApp({ session, onLogout }) {
   );
 }
 
+function MessagesView({ traineeId, t }) {
+  const [trainers, setTrainers] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [selectedTrainerId, setSelectedTrainerId] = useState(null);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const [trainerRecords, traineeConversations] = await Promise.all([
+        sGet("trainers_index"),
+        loadConversationsForTrainee(traineeId),
+      ]);
+      setTrainers(trainerRecords || []);
+      setConversations(traineeConversations);
+    })();
+  }, [traineeId]);
+
+  const selectedTrainer = trainers.find((trainer) => trainer.id === selectedTrainerId) || null;
+  const selectedConversation = conversations.find((conversation) => conversation.trainerId === selectedTrainerId);
+  const activeConversations = conversations
+    .filter((conversation) => conversation.messages.length > 0)
+    .sort((a, b) => b.updatedAt - a.updatedAt);
+  const visibleTrainers = trainers.filter((trainer) => trainer.name.toLowerCase().includes(search.trim().toLowerCase()));
+
+  async function handleSend({ text, attachment }) {
+    if (!selectedTrainer) return;
+    const message = { id: genId(), sender: "trainee", text, attachment, readBy: { [`trainee:${traineeId}`]: true }, createdAt: Date.now() };
+    const nextConversation = await saveConversationMessage(traineeId, selectedTrainer.id, message);
+    setConversations((current) => {
+      const exists = current.some((conversation) => conversation.id === nextConversation.id);
+      return exists
+        ? current.map((conversation) => conversation.id === nextConversation.id ? nextConversation : conversation)
+        : [...current, nextConversation];
+    });
+  }
+
+  async function selectConversation(conversation) {
+    setSelectedTrainerId(conversation.trainerId);
+    const nextConversation = await markConversationRead(conversation.id, `trainee:${traineeId}`);
+    if (nextConversation) setConversations((current) => current.map((item) => item.id === nextConversation.id ? nextConversation : item));
+  }
+
+  async function selectTrainer(trainer) {
+    setSelectedTrainerId(trainer.id);
+    const conversation = conversations.find((item) => item.trainerId === trainer.id);
+    if (conversation) {
+      const nextConversation = await markConversationRead(conversation.id, `trainee:${traineeId}`);
+      if (nextConversation) setConversations((current) => current.map((item) => item.id === nextConversation.id ? nextConversation : item));
+    }
+  }
+
+  return (
+    <div>
+      <SectionHeader icon={<MessageCircle size={20} color="#fff" />} color={COLORS.trainer} title={t("messagesHeading")} />
+      <div className="grid grid-cols-1 md:grid-cols-[minmax(210px,0.75fr)_minmax(0,1.4fr)] gap-4 mt-4 items-start">
+        <Card className="overflow-hidden">
+          <div className="p-4" style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: COLORS.inkSoft }}>{t("activeConversationsHeading")}</p>
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: COLORS.bg }}>
+              <Search size={16} color={COLORS.inkSoft} />
+              <input
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+                placeholder={t("trainersDirectoryHeading")}
+                className="w-full bg-transparent outline-none text-sm"
+                style={{ color: COLORS.ink }}
+              />
+            </div>
+          </div>
+          <div className="p-2 max-h-72 overflow-y-auto">
+            {activeConversations.map((conversation) => {
+              const trainer = trainers.find((item) => item.id === conversation.trainerId);
+              if (!trainer) return null;
+              const active = trainer.id === selectedTrainerId;
+              const lastMessage = conversation.messages[conversation.messages.length - 1];
+              return (
+                <button
+                  key={conversation.id}
+                  onClick={() => selectConversation(conversation)}
+                  className="w-full flex items-center gap-3 p-3 rounded-xl text-start"
+                  style={{ backgroundColor: active ? COLORS.trainer + "14" : "transparent" }}
+                >
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: COLORS.trainer + "20", color: COLORS.trainer }}>
+                    <User size={17} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="font-medium truncate" style={{ color: COLORS.ink }}>{trainer.name}</p>
+                    <p className="text-xs truncate" style={{ color: COLORS.inkSoft }}>{lastMessage.sender === "trainee" ? t("youLabel") : trainer.name}: {lastMessage.text || lastMessage.attachment?.name}</p>
+                  </div>
+                </button>
+              );
+            })}
+            {activeConversations.length === 0 && <p className="p-3 text-sm" style={{ color: COLORS.inkSoft }}>{t("chooseTrainerMsg")}</p>}
+          </div>
+          <div className="p-4" style={{ borderTop: `1px solid ${COLORS.border}` }}>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: COLORS.inkSoft }}>{t("trainersDirectoryHeading")}</p>
+            <div className="flex flex-col gap-1 max-h-56 overflow-y-auto">
+              {visibleTrainers.map((trainer) => (
+                <button
+                  key={trainer.id}
+                  onClick={() => selectTrainer(trainer)}
+                  className="w-full flex items-center gap-3 p-2.5 rounded-xl text-start"
+                  style={{ backgroundColor: trainer.id === selectedTrainerId ? COLORS.trainer + "14" : "transparent" }}
+                >
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: COLORS.border }}><User size={15} color={COLORS.inkSoft} /></div>
+                  <div className="min-w-0"><p className="text-sm font-medium truncate" style={{ color: COLORS.ink }}>{trainer.name}</p><p className="text-xs" style={{ color: COLORS.inkSoft }}>{trainer.role === "admin" ? t("adminBadge") : t("trainerBadge")}</p></div>
+                </button>
+              ))}
+              {visibleTrainers.length === 0 && <p className="text-sm" style={{ color: COLORS.inkSoft }}>{t("noTrainersAvailableMsg")}</p>}
+            </div>
+          </div>
+        </Card>
+
+        <Card className="min-h-[460px] flex flex-col overflow-hidden">
+          {selectedTrainer ? (
+            <>
+              <div className="flex items-center gap-3 p-4" style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS.trainer + "20", color: COLORS.trainer }}><User size={18} /></div>
+                <div><p className="font-semibold" style={{ color: COLORS.ink }}>{selectedTrainer.name}</p><p className="text-xs" style={{ color: COLORS.inkSoft }}>{selectedTrainer.role === "admin" ? t("adminBadge") : t("trainerBadge")}</p></div>
+              </div>
+              <div className="flex-1 p-4 flex flex-col gap-3 overflow-y-auto min-h-[300px]">
+                {!selectedConversation?.messages.length && <div className="m-auto text-center max-w-xs"><MessageCircle size={28} color={COLORS.trainer} className="mx-auto mb-3" /><p className="text-sm" style={{ color: COLORS.inkSoft }}>{t("chooseTrainerMsg")}</p></div>}
+                {selectedConversation?.messages.map((message) => <MessageBubble key={message.id} message={message} own={message.sender === "trainee"} senderLabel={message.sender === "trainee" ? t("youLabel") : selectedTrainer.name} t={t} />)}
+              </div>
+              <MessageComposer t={t} color={COLORS.trainer} onSend={handleSend} />
+            </>
+          ) : (
+            <div className="m-auto text-center max-w-xs p-6"><MessageCircle size={32} color={COLORS.trainer} className="mx-auto mb-3" /><p className="font-medium mb-1" style={{ color: COLORS.ink }}>{t("messagesHeading")}</p><p className="text-sm" style={{ color: COLORS.inkSoft }}>{t("chooseTrainerMsg")}</p></div>
+          )}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function TrainerMessagesView({ trainerId, t }) {
+  const [trainees, setTrainees] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [selectedTraineeId, setSelectedTraineeId] = useState(null);
+  const [search, setSearch] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      const [traineeRecords, allConversations] = await Promise.all([
+        sGet("trainees_index"),
+        sGet("conversations_index"),
+      ]);
+      setTrainees((traineeRecords || []).filter((trainee) => !trainee.archived));
+      setConversations((allConversations || []).filter((conversation) => conversation.trainerId === trainerId));
+    })();
+  }, [trainerId]);
+
+  const selectedTrainee = trainees.find((trainee) => trainee.id === selectedTraineeId) || null;
+  const selectedConversation = conversations.find((conversation) => conversation.traineeId === selectedTraineeId);
+  const activeConversations = conversations.filter((conversation) => conversation.messages.length > 0).sort((a, b) => b.updatedAt - a.updatedAt);
+  const visibleTrainees = trainees.filter((trainee) => trainee.name.toLowerCase().includes(search.trim().toLowerCase()));
+
+  async function handleSend({ text, attachment }) {
+    if (!selectedTrainee) return;
+    const message = { id: genId(), sender: "trainer", text, attachment, readBy: { [`trainer:${trainerId}`]: true }, createdAt: Date.now() };
+    const nextConversation = await saveConversationMessage(selectedTrainee.id, trainerId, message);
+    setConversations((current) => {
+      const exists = current.some((conversation) => conversation.id === nextConversation.id);
+      return exists
+        ? current.map((conversation) => conversation.id === nextConversation.id ? nextConversation : conversation)
+        : [...current, nextConversation];
+    });
+  }
+
+  async function selectTrainee(trainee) {
+    setSelectedTraineeId(trainee.id);
+    const conversation = conversations.find((item) => item.traineeId === trainee.id);
+    if (conversation) {
+      const nextConversation = await markConversationRead(conversation.id, `trainer:${trainerId}`);
+      if (nextConversation) setConversations((current) => current.map((item) => item.id === nextConversation.id ? nextConversation : item));
+    }
+  }
+
+  return (
+    <div>
+      <SectionHeader icon={<MessageCircle size={20} color="#fff" />} color={COLORS.trainer} title={t("messagesHeading")} />
+      <div className="grid grid-cols-1 md:grid-cols-[minmax(210px,0.75fr)_minmax(0,1.4fr)] gap-4 mt-4 items-start">
+        <Card className="overflow-hidden">
+          <div className="p-4" style={{ borderBottom: `1px solid ${COLORS.border}` }}>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: COLORS.inkSoft }}>{t("activeConversationsHeading")}</p>
+            <div className="flex items-center gap-2 px-3 py-2 rounded-xl" style={{ backgroundColor: COLORS.bg }}>
+              <Search size={16} color={COLORS.inkSoft} />
+              <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("traineeProfileHeading")} className="w-full bg-transparent outline-none text-sm" style={{ color: COLORS.ink }} />
+            </div>
+          </div>
+          <div className="p-2 max-h-72 overflow-y-auto">
+            {activeConversations.map((conversation) => {
+              const trainee = trainees.find((item) => item.id === conversation.traineeId);
+              if (!trainee) return null;
+              const lastMessage = conversation.messages[conversation.messages.length - 1];
+              return <button key={conversation.id} onClick={() => selectTrainee(trainee)} className="w-full flex items-center gap-3 p-3 rounded-xl text-start" style={{ backgroundColor: trainee.id === selectedTraineeId ? COLORS.trainer + "14" : "transparent" }}><div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: COLORS.trainer + "20", color: COLORS.trainer }}><User size={17} /></div><div className="min-w-0"><p className="font-medium truncate" style={{ color: COLORS.ink }}>{trainee.name}</p><p className="text-xs truncate" style={{ color: COLORS.inkSoft }}>{lastMessage.sender === "trainer" ? t("youLabel") : trainee.name}: {lastMessage.text || lastMessage.attachment?.name}</p></div></button>;
+            })}
+            {activeConversations.length === 0 && <p className="p-3 text-sm" style={{ color: COLORS.inkSoft }}>{t("noMessagesYetMsg")}</p>}
+          </div>
+          <div className="p-4" style={{ borderTop: `1px solid ${COLORS.border}` }}>
+            <p className="text-xs font-semibold uppercase tracking-wide mb-3" style={{ color: COLORS.inkSoft }}>{t("traineeProfileHeading")}</p>
+            <div className="flex flex-col gap-1 max-h-56 overflow-y-auto">
+              {visibleTrainees.map((trainee) => <button key={trainee.id} onClick={() => selectTrainee(trainee)} className="w-full flex items-center gap-3 p-2.5 rounded-xl text-start" style={{ backgroundColor: trainee.id === selectedTraineeId ? COLORS.trainer + "14" : "transparent" }}><div className="w-8 h-8 rounded-full flex items-center justify-center shrink-0" style={{ backgroundColor: COLORS.border }}><User size={15} color={COLORS.inkSoft} /></div><p className="text-sm font-medium truncate" style={{ color: COLORS.ink }}>{trainee.name}</p></button>)}
+              {visibleTrainees.length === 0 && <p className="text-sm" style={{ color: COLORS.inkSoft }}>{t("noGroupsMsg")}</p>}
+            </div>
+          </div>
+        </Card>
+        <Card className="min-h-[460px] flex flex-col overflow-hidden">
+          {selectedTrainee ? <>
+            <div className="flex items-center gap-3 p-4" style={{ borderBottom: `1px solid ${COLORS.border}` }}><div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: COLORS.trainer + "20", color: COLORS.trainer }}><User size={18} /></div><div><p className="font-semibold" style={{ color: COLORS.ink }}>{selectedTrainee.name}</p><p className="text-xs" style={{ color: COLORS.inkSoft }}>{selectedTrainee.group}</p></div></div>
+            <div className="flex-1 p-4 flex flex-col gap-3 overflow-y-auto min-h-[300px]">
+              {!selectedConversation?.messages.length && <div className="m-auto text-center max-w-xs"><MessageCircle size={28} color={COLORS.trainer} className="mx-auto mb-3" /><p className="text-sm" style={{ color: COLORS.inkSoft }}>{t("chooseTraineeMsg")}</p></div>}
+              {selectedConversation?.messages.map((message) => <MessageBubble key={message.id} message={message} own={message.sender === "trainer"} senderLabel={message.sender === "trainer" ? t("youLabel") : selectedTrainee.name} t={t} />)}
+            </div>
+            <MessageComposer t={t} color={COLORS.trainer} onSend={handleSend} />
+          </> : <div className="m-auto text-center max-w-xs p-6"><MessageCircle size={32} color={COLORS.trainer} className="mx-auto mb-3" /><p className="font-medium mb-1" style={{ color: COLORS.ink }}>{t("messagesHeading")}</p><p className="text-sm" style={{ color: COLORS.inkSoft }}>{t("chooseTraineeMsg")}</p></div>}
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function TraineeAccountsView({ trainerPrivateKey, t }) {
+  const [trainees, setTrainees] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [name, setName] = useState("");
+  const [birthDate, setBirthDate] = useState("");
+  const [group, setGroup] = useState("");
+  const [code, setCode] = useState("");
+  const [learningPath, setLearningPath] = useState("linguistic_professional");
+  const [search, setSearch] = useState("");
+  const [temporaryCode, setTemporaryCode] = useState(null);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const load = useCallback(async () => {
+    setTrainees(((await sGet("trainees_index")) || []).filter((trainee) => !trainee.archived));
+    const records = (await sGet("groups_index")) || [];
+    setGroups(records);
+    setGroup((current) => current || records[0]?.name || "");
+  }, []);
+  useEffect(() => { load(); }, [load]);
+
+  async function handleCreate(event) {
+    event.preventDefault();
+    setError("");
+    if (!name.trim() || !birthDate.trim() || !group.trim()) { setError(t("errorFillFields")); return; }
+    if (code.trim() && !isTraineeCodeValid(code.trim().toUpperCase())) { setError(t("traineeCodeFormatMsg")); return; }
+    setBusy(true);
+    try {
+      const result = await createManagedTraineeAccount({ name, birthDate, group, temporaryCode: code, learningPath });
+      setTemporaryCode({ name: result.record.name, code: result.temporaryCode });
+      setName(""); setBirthDate(""); setCode(""); setLearningPath("linguistic_professional");
+      await load();
+    } catch (e) {
+      setError(t("errorFillFields"));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleReset(trainee) {
+    const result = await generateTemporaryTraineeCode(trainerPrivateKey, trainee);
+    setTrainees((current) => current.map((item) => item.id === trainee.id ? result.trainee : item));
+    setTemporaryCode({ name: trainee.name, code: result.temporaryCode });
+  }
+
+  const visibleTrainees = trainees.filter((trainee) => trainee.name.toLowerCase().includes(search.trim().toLowerCase()));
+
+  return <div>
+    <SectionHeader icon={<UserPlus size={20} color="#fff" />} color={COLORS.trainer} title={t("traineeAccountsHeading")} />
+    <Card className="p-5 mt-4">
+      <h3 className="font-semibold mb-4" style={{ color: COLORS.ink }}>{t("createAccountForTraineeBtn")}</h3>
+      <form onSubmit={handleCreate}>
+        <TextInput label={t("fullNameLabel")} value={name} onChange={(event) => setName(event.target.value)} autoComplete="off" />
+        <TextInput label={t("birthDateLabel")} type="date" value={birthDate} onChange={(event) => setBirthDate(event.target.value)} />
+        <TextInput label={t("temporaryTraineeCodeLabel")} value={code} onChange={(event) => setCode(event.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 5).toUpperCase())} autoComplete="off" />
+        <Button type="button" variant="outline" color={COLORS.trainer} className="w-full -mt-2 mb-4" onClick={() => setCode(`T${String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0")}`)}>{t("generateTemporaryCodeBtn")}</Button>
+        <label className="block mb-4"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("learningPathLabel")}</span><select value={learningPath} onChange={(event) => setLearningPath(event.target.value)} className="w-full px-4 py-3 rounded-xl outline-none text-[16px]" style={{ border: `1.5px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}><option value="linguistic">{t("linguisticOnlyPath")}</option><option value="linguistic_professional">{t("linguisticProfessionalPath")}</option></select></label>
+        <label className="block mb-4"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("groupLabel")}</span><select value={group} onChange={(event) => setGroup(event.target.value)} className="w-full px-4 py-3 rounded-xl outline-none text-[16px]" style={{ border: `1.5px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}><option value="" disabled>{t("selectGroupPlaceholder")}</option>{groups.map((item) => <option key={item.id} value={item.name}>{item.name}</option>)}</select></label>
+        {error && <p className="text-sm mb-3" style={{ color: COLORS.danger }}>{error}</p>}
+        <Button type="submit" color={COLORS.trainer} disabled={busy}>{busy ? <Loader2 className="animate-spin" size={18} /> : t("createAccountForTraineeBtn")}</Button>
+      </form>
+      {temporaryCode && <div className="mt-4 p-3 rounded-xl" style={{ backgroundColor: COLORS.trainer + "12" }}><p className="font-semibold" style={{ color: COLORS.ink }}>{temporaryCode.name}: <span className="tracking-widest">{temporaryCode.code}</span></p><p className="text-xs mt-1" style={{ color: COLORS.inkSoft }}>{t("temporaryCodeHelp")}</p></div>}
+    </Card>
+    <Card className="p-5 mt-4">
+      <div className="flex items-center gap-2 px-3 py-2 rounded-xl mb-3" style={{ backgroundColor: COLORS.bg }}><Search size={16} color={COLORS.inkSoft} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder={t("traineeProfileHeading")} className="w-full bg-transparent outline-none text-sm" style={{ color: COLORS.ink }} /></div>
+      <div className="flex flex-col gap-2">{visibleTrainees.map((trainee) => <div key={trainee.id} className="flex items-center justify-between gap-3 p-3 rounded-xl" style={{ border: `1px solid ${COLORS.border}` }}><div className="flex items-center gap-3 min-w-0"><AccountAvatar src={trainee.avatarDataUrl} size={36} /><div className="min-w-0"><p className="font-medium truncate" style={{ color: COLORS.ink }}>{trainee.name}</p><p className="text-xs" style={{ color: COLORS.inkSoft }}>{trainee.group}</p></div></div><Button type="button" variant="outline" color={COLORS.trainer} className="!px-3 !py-2 shrink-0" onClick={() => handleReset(trainee)}>{t("resetTraineeCodeBtn")}</Button></div>)}</div>
+    </Card>
+  </div>;
+}
+
 /* ============================== Trainer App ============================== */
 
 function TrainerApp({ session, onLogout }) {
   const [tab, setTab] = useState("groups");
+  const [mustChangeCode, setMustChangeCode] = useState(Boolean(session.mustChangeCode));
+  const unreadMessages = useUnreadMessageCount("trainer", session.trainerId);
   const [trainees, setTrainees] = useState([]);
+  const [groupRecords, setGroupRecords] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
   const [selectedTrainee, setSelectedTrainee] = useState(null);
   const langMeta = LANGS.find((l) => l.code === session.lang) || LANGS[0];
   const t = useT(session.lang);
   const isAdmin = session.role === "admin";
-  const scopedGroupNames = session.groupNames || [];
+
+  if (mustChangeCode) return <TrainerCodeChangeView session={session} t={t} onComplete={() => setMustChangeCode(false)} />;
 
   const loadTrainees = useCallback(async () => {
     setTrainees((await sGet("trainees_index")) || []);
+    setGroupRecords((await sGet("groups_index")) || []);
   }, []);
   useEffect(() => { loadTrainees(); }, [loadTrainees]);
 
-  // A plain trainer only sees trainees belonging to groups assigned to them by the admin.
-  const inScope = useCallback(
-    (x) => isAdmin || scopedGroupNames.length === 0 || scopedGroupNames.includes(x.group),
-    [isAdmin, scopedGroupNames]
-  );
-
-  const activeTrainees = trainees.filter((x) => !x.archived && inScope(x));
-  const archivedTrainees = trainees.filter((x) => x.archived && inScope(x));
-  const groups = [...new Set(activeTrainees.map((x) => x.group))];
+  const activeTrainees = trainees.filter((x) => !x.archived);
+  const archivedTrainees = trainees.filter((x) => x.archived);
+  const groups = [...new Set([...groupRecords.map((group) => group.name), ...activeTrainees.map((x) => x.group).filter(Boolean)])];
 
   async function handleArchive(traineeId, archived) {
     const next = await archiveTrainee(traineeId, archived);
@@ -2949,12 +3908,17 @@ function TrainerApp({ session, onLogout }) {
     setTrainees(next);
     setSelectedTrainee(null);
   }
+  async function handleResetTraineeCode(trainee) {
+    const result = await generateTemporaryTraineeCode(session.trainerPrivateKey, trainee);
+    setTrainees((current) => current.map((item) => item.id === result.trainee.id ? result.trainee : item));
+    return result;
+  }
 
   return (
     <div dir={langMeta.dir} className="min-h-screen pb-24" style={{ backgroundColor: COLORS.bg, fontFamily: "'Noto Sans','Noto Sans Arabic','Noto Sans SC',sans-serif" }}>
       <header className="px-5 pt-6 pb-4 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <OrgMark size={38} />
+          <AccountAvatar src={session.avatarDataUrl} size={38} />
           <div>
             <p className="text-sm" style={{ color: COLORS.inkSoft }}>{session.trainerName} · {isAdmin ? t("adminBadge") : t("trainerBadge")}</p>
             <h1 className="text-xl font-semibold" style={{ color: COLORS.ink }}>{t("trainerDashboardHeading")}</h1>
@@ -2986,12 +3950,17 @@ function TrainerApp({ session, onLogout }) {
             t={t}
             trainee={selectedTrainee}
             trainerPrivateKey={session.trainerPrivateKey}
+            trainerId={session.trainerId}
             onBack={() => setSelectedTrainee(null)}
             onArchive={handleArchive}
             onDeleteForever={handleDeleteForever}
+            onResetCode={handleResetTraineeCode}
           />
         )}
         {tab === "settings" && <TrainerSettings t={t} session={session} />}
+        {tab === "messages" && <TrainerMessagesView trainerId={session.trainerId} t={t} />}
+        {tab === "traineeAccounts" && <TraineeAccountsView trainerPrivateKey={session.trainerPrivateKey} t={t} />}
+        {tab === "profile" && <ProfileView account={session} role="trainer" t={t} />}
         {tab === "management" && isAdmin && (
           <ManagementView t={t} session={session} />
         )}
@@ -3002,6 +3971,9 @@ function TrainerApp({ session, onLogout }) {
           {[
             { key: "groups", label: t("groupsHeading"), icon: Users },
             { key: "archive", label: t("archivedHeading"), icon: FileText },
+            { key: "messages", label: t("navMessages"), icon: MessageCircle },
+            { key: "traineeAccounts", label: t("traineeAccountsHeading"), icon: UserPlus },
+            { key: "profile", label: t("navProfile"), icon: User },
             ...(isAdmin ? [{ key: "management", label: t("managementHeading"), icon: Shield }] : []),
             { key: "settings", label: t("settingsHeading"), icon: Settings },
           ].map((tb) => {
@@ -3011,11 +3983,12 @@ function TrainerApp({ session, onLogout }) {
               <button
                 key={tb.key}
                 onClick={() => { setTab(tb.key); setSelectedGroup(null); setSelectedTrainee(null); }}
-                className="flex-1 flex flex-col items-center gap-1 py-3 transition"
+                className="relative flex-1 flex flex-col items-center gap-1 py-3 transition"
                 style={{ backgroundColor: active ? COLORS.ink + "10" : "transparent" }}
               >
                 <Icon size={20} color={active ? COLORS.ink : COLORS.inkSoft} />
                 <span className="text-[11px] font-medium" style={{ color: active ? COLORS.ink : COLORS.inkSoft }}>{tb.label}</span>
+                {tb.key === "messages" && unreadMessages > 0 && <span className="absolute top-1 right-1/4 min-w-4 h-4 px-1 rounded-full text-[10px] leading-4 font-bold" style={{ backgroundColor: COLORS.danger, color: "#fff" }}>{unreadMessages > 9 ? "9+" : unreadMessages}</span>}
               </button>
             );
           })}
@@ -3098,13 +4071,16 @@ function TraineesList({ t, group, trainees, onBack, onSelect }) {
   );
 }
 
-function TraineeProfile({ t, trainee, trainerPrivateKey, onBack, onArchive, onDeleteForever }) {
+function TraineeProfile({ t, trainee, trainerPrivateKey, trainerId, onBack, onArchive, onDeleteForever, onResetCode }) {
   const [tab, setTab] = useState("documents");
+  const hasProfessionalPathway = trainee.learningPath !== "linguistic";
   const [dk, setDk] = useState(null);
   const [failed, setFailed] = useState(false);
   const [confirmArchive, setConfirmArchive] = useState(false);
   const [confirmDeleteForever, setConfirmDeleteForever] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [resettingCode, setResettingCode] = useState(false);
+  const [temporaryCode, setTemporaryCode] = useState("");
 
   useEffect(() => {
     let cancelled = false;
@@ -3133,7 +4109,7 @@ function TraineeProfile({ t, trainee, trainerPrivateKey, onBack, onArchive, onDe
 
       <div className="flex gap-2 mb-5 flex-wrap">
         <button onClick={() => setTab("rules")} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: tab === "rules" ? COLORS.rules : "#fff", color: tab === "rules" ? "#fff" : COLORS.ink, border: `1px solid ${COLORS.border}` }}>{t("navRules")}</button>
-        <button onClick={() => setTab("pro")} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: tab === "pro" ? COLORS.rules : "#fff", color: tab === "pro" ? "#fff" : COLORS.ink, border: `1px solid ${COLORS.border}` }}>{t("proHeading")}</button>
+        {hasProfessionalPathway && <button onClick={() => setTab("pro")} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: tab === "pro" ? COLORS.rules : "#fff", color: tab === "pro" ? "#fff" : COLORS.ink, border: `1px solid ${COLORS.border}` }}>{t("proHeading")}</button>}
         <button onClick={() => setTab("documents")} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: tab === "documents" ? COLORS.docs : "#fff", color: tab === "documents" ? "#fff" : COLORS.ink, border: `1px solid ${COLORS.border}` }}>{t("navDocuments")}</button>
         <button onClick={() => setTab("activity")} className="px-4 py-2 rounded-lg text-sm font-medium" style={{ backgroundColor: tab === "activity" ? COLORS.activity : "#fff", color: tab === "activity" ? "#fff" : COLORS.ink, border: `1px solid ${COLORS.border}` }}>{t("navActivity")}</button>
       </div>
@@ -3141,7 +4117,7 @@ function TraineeProfile({ t, trainee, trainerPrivateKey, onBack, onArchive, onDe
       {failed && <Card className="p-5"><EmptyState text={t("errorWrongPin")} /></Card>}
       {!failed && !dk && <LoadingBlock t={t} />}
       {!failed && dk && tab === "rules" && <TraineeRulesAckView traineeId={trainee.id} dk={dk} t={t} traineeName={trainee.name} group={trainee.group} birthDate={trainee.birthDate} />}
-      {!failed && dk && tab === "pro" && <ProView traineeId={trainee.id} dk={dk} t={t} readOnly={true} />}
+      {!failed && dk && tab === "pro" && hasProfessionalPathway && <ProView traineeId={trainee.id} dk={dk} t={t} readOnly={true} />}
       {!failed && dk && tab === "documents" && <DocumentsView traineeId={trainee.id} dk={dk} t={t} />}
       {!failed && dk && tab === "activity" && <ActivityView traineeId={trainee.id} dk={dk} t={t} />}
 
@@ -3160,6 +4136,26 @@ function TraineeProfile({ t, trainee, trainerPrivateKey, onBack, onArchive, onDe
             {t("deleteForeverBtn")}
           </Button>
         </div>
+        <Button
+          variant="outline"
+          color={COLORS.trainer}
+          className="w-full mt-3"
+          disabled={resettingCode}
+          onClick={async () => {
+            setResettingCode(true);
+            const result = await onResetCode(trainee);
+            setTemporaryCode(result.temporaryCode);
+            setResettingCode(false);
+          }}
+        >
+          {resettingCode ? <Loader2 className="animate-spin" size={18} /> : t("sendTemporaryCodeBtn")}
+        </Button>
+        {temporaryCode && (
+          <div className="mt-3 p-3 rounded-xl" style={{ backgroundColor: COLORS.trainer + "12" }}>
+            <p className="text-sm font-semibold" style={{ color: COLORS.ink }}>{t("temporaryCodeHeading")}: <span className="tracking-widest">{temporaryCode}</span></p>
+            <p className="text-xs mt-1" style={{ color: COLORS.inkSoft }}>{t("temporaryCodeHelp")}</p>
+          </div>
+        )}
       </Card>
 
       {confirmArchive && (
@@ -3259,8 +4255,19 @@ function ManagementView({ t, session }) {
   const [subTab, setSubTab] = useState("trainers");
   const [trainers, setTrainers] = useState(null);
   const [groups, setGroups] = useState(null);
+  const [recoveryRequests, setRecoveryRequests] = useState([]);
+  const [temporaryStaffCode, setTemporaryStaffCode] = useState(null);
 
   const [showAddTrainer, setShowAddTrainer] = useState(false);
+  const [showAddTrainee, setShowAddTrainee] = useState(false);
+  const [newTraineeName, setNewTraineeName] = useState("");
+  const [newTraineeBirthDate, setNewTraineeBirthDate] = useState("");
+  const [newTraineeGroup, setNewTraineeGroup] = useState("");
+  const [newTraineeCode, setNewTraineeCode] = useState("");
+  const [newTraineeLearningPath, setNewTraineeLearningPath] = useState("linguistic_professional");
+  const [newTraineeBusy, setNewTraineeBusy] = useState(false);
+  const [newTraineeError, setNewTraineeError] = useState("");
+  const [temporaryTraineeCode, setTemporaryTraineeCode] = useState(null);
   const [trainerName, setTrainerName] = useState("");
   const [trainerPin, setTrainerPin] = useState("");
   const [trainerRole, setTrainerRole] = useState("trainer");
@@ -3279,6 +4286,7 @@ function ManagementView({ t, session }) {
   const load = useCallback(async () => {
     setTrainers((await sGet("trainers_index")) || []);
     setGroups((await sGet("groups_index")) || []);
+    setRecoveryRequests(((await sGet("trainer_recovery_requests")) || []).filter((request) => request.status === "pending"));
   }, []);
   useEffect(() => { load(); }, [load]);
 
@@ -3286,9 +4294,14 @@ function ManagementView({ t, session }) {
     setTrainerName(""); setTrainerPin(""); setTrainerRole("trainer"); setTrainerGroups([]); setTrainerError("");
   }
 
+  function resetTraineeForm() {
+    setNewTraineeName(""); setNewTraineeBirthDate(""); setNewTraineeGroup(groups?.[0]?.name || ""); setNewTraineeCode(""); setNewTraineeLearningPath("linguistic_professional"); setNewTraineeError("");
+  }
+
   async function handleAddTrainer() {
     setTrainerError("");
-    if (!trainerName.trim() || trainerPin.trim().length < 4) { setTrainerError(t("errorFillFields")); return; }
+    if (!trainerName.trim()) { setTrainerError(t("errorFillFields")); return; }
+    if (!isStaffCodeValid(trainerPin.trim())) { setTrainerError(t("codeFormatMsg")); return; }
     setTrainerBusy(true);
     try {
       await addTrainerAccount(session.trainerPrivateKey, {
@@ -3299,6 +4312,7 @@ function ManagementView({ t, session }) {
       });
       setTrainerBusy(false);
       setShowAddTrainer(false);
+      setTemporaryStaffCode({ trainerId: null, name: trainerName.trim(), code: trainerPin.trim() });
       resetTrainerForm();
       setTrainerMsg(t("trainerAddedMsg"));
       setTimeout(() => setTrainerMsg(""), 2500);
@@ -3306,6 +4320,23 @@ function ManagementView({ t, session }) {
     } catch (e) {
       setTrainerBusy(false);
       setTrainerError(t("errorFillFields"));
+    }
+  }
+
+  async function handleAddTrainee() {
+    setNewTraineeError("");
+    if (!newTraineeName.trim() || !newTraineeBirthDate.trim() || !newTraineeGroup.trim()) { setNewTraineeError(t("errorFillFields")); return; }
+    if (newTraineeCode.trim() && !isTraineeCodeValid(newTraineeCode.trim().toUpperCase())) { setNewTraineeError(t("traineeCodeFormatMsg")); return; }
+    setNewTraineeBusy(true);
+    try {
+      const result = await createManagedTraineeAccount({ name: newTraineeName, birthDate: newTraineeBirthDate, group: newTraineeGroup, temporaryCode: newTraineeCode, learningPath: newTraineeLearningPath });
+      setTemporaryTraineeCode({ name: result.record.name, code: result.temporaryCode });
+      setNewTraineeBusy(false);
+      setShowAddTrainee(false);
+      resetTraineeForm();
+    } catch (e) {
+      setNewTraineeBusy(false);
+      setNewTraineeError(t("errorFillFields"));
     }
   }
 
@@ -3319,6 +4350,16 @@ function ManagementView({ t, session }) {
       setTrainerError(t("cannotDeleteLastAdminMsg"));
       setTimeout(() => setTrainerError(""), 3000);
     }
+  }
+
+  async function handleResetTrainerCode(trainerId) {
+    const result = await resetTrainerCodeByAdmin(session.trainerPrivateKey, trainerId);
+    setTrainers(result.trainers);
+    const nextRequests = recoveryRequests.filter((request) => request.trainerId !== trainerId);
+    setRecoveryRequests(nextRequests);
+    const allRequests = (await sGet("trainer_recovery_requests")) || [];
+    await sSet("trainer_recovery_requests", allRequests.map((request) => request.trainerId === trainerId ? { ...request, status: "resolved", resolvedAt: Date.now() } : request));
+    setTemporaryStaffCode({ trainerId, code: result.newCode });
   }
 
   async function handleAddGroup() {
@@ -3352,10 +4393,37 @@ function ManagementView({ t, session }) {
 
       {subTab === "trainers" && (
         <div>
+          {recoveryRequests.length > 0 && (
+            <Card className="p-4 mb-4" style={{ borderColor: COLORS.trainer }}>
+              <p className="font-semibold mb-3" style={{ color: COLORS.ink }}>{t("recoveryRequestsHeading")}</p>
+              <div className="flex flex-col gap-3">
+                {recoveryRequests.map((request) => (
+                  <div key={request.id} className="flex items-center justify-between gap-3">
+                    <div className="min-w-0"><p className="font-medium truncate" style={{ color: COLORS.ink }}>{request.trainerName}</p><p className="text-xs" style={{ color: COLORS.inkSoft }}>{new Date(request.createdAt).toLocaleString()}</p></div>
+                    <Button color={COLORS.trainer} className="!px-3 !py-2 shrink-0" onClick={() => handleResetTrainerCode(request.trainerId)}>{t("resetTrainerCodeBtn")}</Button>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+          {temporaryStaffCode && (
+            <Card className="p-4 mb-4" style={{ backgroundColor: COLORS.trainer + "12" }}>
+              <p className="font-semibold" style={{ color: COLORS.ink }}>{t("staffTemporaryCodeHeading")}{temporaryStaffCode.name ? ` · ${temporaryStaffCode.name}` : ""}: <span className="tracking-widest">{temporaryStaffCode.code}</span></p>
+              <p className="text-xs mt-1" style={{ color: COLORS.inkSoft }}>{t("staffTemporaryCodeHelp")}</p>
+            </Card>
+          )}
+          {temporaryTraineeCode && (
+            <Card className="p-4 mb-4" style={{ backgroundColor: COLORS.rules + "12" }}>
+              <p className="font-semibold" style={{ color: COLORS.ink }}>{t("traineeAccountCreatedMsg")}: {temporaryTraineeCode.name}</p>
+              <p className="text-sm mt-1" style={{ color: COLORS.ink }}>{t("temporaryCodeHeading")}: <span className="tracking-widest">{temporaryTraineeCode.code}</span></p>
+              <p className="text-xs mt-1" style={{ color: COLORS.inkSoft }}>{t("temporaryCodeHelp")}</p>
+            </Card>
+          )}
           <div className="flex items-center justify-between mb-3">
-            <Button color={COLORS.ink} className="!px-4 !py-2" onClick={() => { resetTrainerForm(); setShowAddTrainer(true); }}>
-              <UserPlus size={16} /> {t("addTrainerBtn")}
-            </Button>
+            <div className="flex gap-2 flex-wrap">
+              <Button color={COLORS.ink} className="!px-4 !py-2" onClick={() => { resetTrainerForm(); setShowAddTrainer(true); }}><UserPlus size={16} /> {t("addTrainerBtn")}</Button>
+              <Button color={COLORS.trainer} className="!px-4 !py-2" onClick={() => { resetTraineeForm(); setShowAddTrainee(true); }}><UserPlus size={16} /> {t("createTraineeAccountBtn")}</Button>
+            </div>
             {trainerMsg && <span className="flex items-center gap-1 text-sm" style={{ color: COLORS.rules }}><Check size={16} />{trainerMsg}</span>}
           </div>
           <div className="flex flex-col gap-3">
@@ -3400,6 +4468,28 @@ function ManagementView({ t, session }) {
         </div>
       )}
 
+      {showAddTrainee && (
+        <Modal onClose={() => setShowAddTrainee(false)}>
+          <h3 className="text-lg font-semibold mb-4" style={{ color: COLORS.ink }}>{t("createTraineeAccountBtn")}</h3>
+          <TextInput label={t("fullNameLabel")} value={newTraineeName} onChange={(e) => setNewTraineeName(e.target.value)} autoComplete="off" />
+          <TextInput label={t("birthDateLabel")} type="date" value={newTraineeBirthDate} onChange={(e) => setNewTraineeBirthDate(e.target.value)} autoComplete="off" />
+          <TextInput label={t("temporaryTraineeCodeLabel")} value={newTraineeCode} onChange={(e) => setNewTraineeCode(e.target.value.replace(/[^a-zA-Z0-9]/g, "").slice(0, 5).toUpperCase())} autoComplete="off" />
+          <Button variant="outline" color={COLORS.trainer} className="w-full -mt-2 mb-4" onClick={() => setNewTraineeCode(`T${String(crypto.getRandomValues(new Uint32Array(1))[0] % 10000).padStart(4, "0")}`)}>
+            <Lock size={16} /> {t("generateTemporaryCodeBtn")}
+          </Button>
+          <label className="block mb-4"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("learningPathLabel")}</span><select value={newTraineeLearningPath} onChange={(e) => setNewTraineeLearningPath(e.target.value)} className="w-full px-4 py-3 rounded-xl outline-none text-[16px]" style={{ border: `1.5px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}><option value="linguistic">{t("linguisticOnlyPath")}</option><option value="linguistic_professional">{t("linguisticProfessionalPath")}</option></select></label>
+          <label className="block mb-4">
+            <span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("groupLabel")}</span>
+            <select value={newTraineeGroup} onChange={(e) => setNewTraineeGroup(e.target.value)} className="w-full px-4 py-3 rounded-xl outline-none text-[16px]" style={{ border: `1.5px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>
+              <option value="" disabled>{t("selectGroupPlaceholder")}</option>
+              {groups.map((group) => <option key={group.id} value={group.name}>{group.name}</option>)}
+            </select>
+          </label>
+          {newTraineeError && <div className="flex items-center gap-2 mb-4 text-sm" style={{ color: COLORS.danger }}><AlertCircle size={16} />{newTraineeError}</div>}
+          <div className="flex gap-3"><Button variant="outline" className="flex-1" onClick={() => setShowAddTrainee(false)}>{t("cancelBtn")}</Button><Button color={COLORS.trainer} className="flex-1" onClick={handleAddTrainee} disabled={newTraineeBusy}>{newTraineeBusy ? <Loader2 className="animate-spin" size={18} /> : t("addBtn")}</Button></div>
+        </Modal>
+      )}
+
       {showAddTrainer && (
         <Modal onClose={() => setShowAddTrainer(false)}>
           <h3 className="text-lg font-semibold mb-4" style={{ color: COLORS.ink }}>{t("addTrainerBtn")}</h3>
@@ -3407,11 +4497,13 @@ function ManagementView({ t, session }) {
           <TextInput
             label={t("newTrainerPinLabel")}
             type="password"
-            inputMode="numeric"
             value={trainerPin}
-            onChange={(e) => setTrainerPin(e.target.value.replace(/\D/g, "").slice(0, 6))}
+            onChange={(e) => setTrainerPin(e.target.value.slice(0, 12))}
             autoComplete="off"
           />
+          <Button variant="outline" color={COLORS.trainer} className="w-full -mt-2 mb-4" onClick={() => setTrainerPin(generateStaffCode())}>
+            <Lock size={16} /> {t("generateTemporaryCodeBtn")}
+          </Button>
           <label className="block mb-4">
             <span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("roleLabel")}</span>
             <select
@@ -3505,7 +4597,7 @@ function TrainerSettings({ t, session }) {
 
   async function handleSave() {
     setError(""); setOk(false);
-    if (next.trim().length < 4) { setError(t("errorFillFields")); return; }
+    if (!next.trim() || (!isAdmin && !isStaffCodeValid(next.trim()))) { setError(isAdmin ? t("errorFillFields") : t("codeFormatMsg")); return; }
     setBusy(true);
     try {
       await changeOwnTrainerPin(session.trainerId, current.trim(), next.trim());
@@ -3532,8 +4624,8 @@ function TrainerSettings({ t, session }) {
       </Card>
       <Card className="p-5 mt-4">
         <h3 className="font-medium mb-4" style={{ color: COLORS.ink }}>{t("changeTrainerPinHeading")}</h3>
-        <TextInput label={t("currentPinLabel")} type="password" inputMode="numeric" value={current} onChange={(e) => setCurrent(e.target.value.replace(/\D/g, "").slice(0, 6))} />
-        <TextInput label={t("newPinLabel")} type="password" inputMode="numeric" value={next} onChange={(e) => setNext(e.target.value.replace(/\D/g, "").slice(0, 6))} />
+        <TextInput label={t("currentPinLabel")} type="password" value={current} onChange={(e) => setCurrent(e.target.value.slice(0, 12))} />
+        <TextInput label={t("newPinLabel")} type="password" value={next} onChange={(e) => setNext(e.target.value.slice(0, 12))} />
         {error && <div className="flex items-center gap-2 mb-4 text-sm" style={{ color: COLORS.danger }}><AlertCircle size={16} />{error}</div>}
         {ok && <div className="flex items-center gap-2 mb-4 text-sm" style={{ color: COLORS.rules }}><Check size={16} />{t("pinChangedMsg")}</div>}
         <Button color={COLORS.ink} onClick={handleSave} disabled={busy}>
@@ -3544,17 +4636,59 @@ function TrainerSettings({ t, session }) {
   );
 }
 
+function InstallPrompt({ t }) {
+  const [installEvent, setInstallEvent] = useState(null);
+  const [dismissed, setDismissed] = useState(false);
+
+  useEffect(() => {
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone;
+    if (standalone) return undefined;
+    const handleInstallAvailable = (event) => {
+      event.preventDefault();
+      setInstallEvent(event);
+    };
+    const handleInstalled = () => setInstallEvent(null);
+    window.addEventListener("beforeinstallprompt", handleInstallAvailable);
+    window.addEventListener("appinstalled", handleInstalled);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleInstallAvailable);
+      window.removeEventListener("appinstalled", handleInstalled);
+    };
+  }, []);
+
+  if (!installEvent || dismissed) return null;
+
+  async function install() {
+    await installEvent.prompt();
+    const result = await installEvent.userChoice;
+    if (result.outcome === "accepted") setInstallEvent(null);
+  }
+
+  return <div className="fixed bottom-4 left-4 right-4 z-40 mx-auto max-w-md rounded-2xl p-4 shadow-xl" style={{ backgroundColor: COLORS.ink, color: "#fff" }}>
+    <div className="flex items-start gap-3">
+      <div className="shrink-0"><Download size={20} color={COLORS.teal} /></div>
+      <div className="flex-1 min-w-0"><p className="font-semibold">{t("installApp")}</p><p className="text-xs mt-1" style={{ color: "rgba(255,255,255,0.75)" }}>{t("installAppHint")}</p></div>
+      <button onClick={() => setDismissed(true)} className="text-white/70 text-lg leading-none" aria-label={t("cancelBtn")}>×</button>
+    </div>
+    <Button color={COLORS.teal} className="w-full mt-3 !py-2.5" onClick={install}>{t("installNow")}</Button>
+  </div>;
+}
+
 /* ============================== Root ============================== */
 
 export default function App() {
   useFonts();
   const [session, setSession] = useState(null);
+  const t = useT(session?.lang || "fr");
 
-  if (!session) return <LoginFlow onLogin={setSession} />;
+  if (!session) return <><LoginFlow onLogin={setSession} /><InstallPrompt t={t} /></>;
 
-  return session.type === "trainee" ? (
-    <TraineeApp session={session} onLogout={() => setSession(null)} />
-  ) : (
-    <TrainerApp session={session} onLogout={() => setSession(null)} />
-  );
+  return <>
+    {session.type === "trainee" ? (
+      <TraineeApp session={session} onLogout={() => setSession(null)} />
+    ) : (
+      <TrainerApp session={session} onLogout={() => setSession(null)} />
+    )}
+    <InstallPrompt t={t} />
+  </>;
 }
