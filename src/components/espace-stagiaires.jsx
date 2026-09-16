@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { loadOfficialRules } from "../lib/official-rules";
 import {
   BookOpen, FileText, ClipboardList, Upload, Camera, LogOut, User, Users,
   Lock, Trash2, Eye, Download, Plus, X, ChevronLeft, Settings,
@@ -1341,6 +1342,18 @@ Object.assign(RULES_TEXT, {
   krl: `MAF Û BERPIYARÊN TE\n\nEv wergera bixweber ji bo têgihiştina rêgezên CFP02 e û divê navendê berî bikaranîna wê wek wergera fermî ya yasayî piştrast bike. Her stajyer bi destpêkirina perwerdeyê vê rêgeza hundirîn qebûl dike.\n\nStajyer divê demên perwerdeyê, rêberiyên perwerdekar û rêgezên ewlehî, paqijî û dîsîplînê bi cih bîne. Alkol, madeyên hişber, cixare û cixareya elektronîk li cihê perwerdeyê qedexe ne. Amûrên perwerdeyê tenê ji bo perwerdeyê û li cihên destûrdayî tên bikaranîn.\n\nRêgezên parastina daneyan, ewlehî, vala kirin û ragihandina qezayan divê bên rêz kirin. Cudahî qedexe ye. Binpêkirin dikare bibe sedema cezayên dîsîplînê, di nav de derxistina demkî an herdemî. Bi îmzekirinê tu piştrast dikî ku te ev rêgez xwendiye, fêm kiriye û qebûl kiriye.`
 });
 
+let officialRulesPromise;
+
+function getOfficialRulesPromise() {
+  if (!officialRulesPromise) {
+    officialRulesPromise = loadOfficialRules().then((officialRules) => {
+      Object.assign(RULES_TEXT, officialRules, { prs: officialRules.fa });
+      return officialRules;
+    });
+  }
+  return officialRulesPromise;
+}
+
 /* ---- Extra fixed handbook sections (pages 6-20 and 40-48 of the official Livret
    Stagiaire, version F du 25/04/24). Hardcoded and read-only, same as RULES_TEXT
    above — these are the reference/context pages of the handbook (not the working
@@ -1493,8 +1506,22 @@ const HANDBOOK_SECTIONS = {
 
 
 /* Internal regulations text in the trainee's selected language. */
-function getRegulationsText(lang) {
-  return RULES_TEXT[lang] || RULES_TEXT.fr;
+function useRulesText() {
+  const [rulesText, setRulesText] = useState(RULES_TEXT);
+
+  useEffect(() => {
+    let active = true;
+    getOfficialRulesPromise().then(() => {
+      if (active) setRulesText({ ...RULES_TEXT });
+    });
+    return () => { active = false; };
+  }, []);
+
+  return rulesText;
+}
+
+function getRegulationsText(lang, rulesText = RULES_TEXT) {
+  return rulesText[lang] || rulesText.fr;
 }
 
 function getHandbookSections(lang) {
@@ -1861,6 +1888,7 @@ function LoginFlow({ onLogin }) {
   const signaturePadRef = useRef(null);
   const langMeta = LANGS.find((l) => l.code === lang);
   const t = useT(lang);
+  const rulesText = useRulesText();
 
   useEffect(() => {
     (async () => {
@@ -1909,9 +1937,10 @@ function LoginFlow({ onLogin }) {
         await sSet("trainees_index", next);
 
         // Store the same language version that the trainee read and accepted.
-        const rulesText = getRulesTextForLang(lang);
+        await getOfficialRulesPromise();
+        const signedRulesText = getRulesTextForLang(lang);
         const signedAt = Date.now();
-        await saveSignedRulesAck(rec.id, dk, { lang, readLang: lang, signedLang: lang, rulesText, signatureDataUrl, signedAt });
+        await saveSignedRulesAck(rec.id, dk, { lang, readLang: lang, signedLang: lang, rulesText: signedRulesText, signatureDataUrl, signedAt });
 
         setBusy(false);
         onLogin({ type: "trainee", ...rec, dk });
@@ -2096,7 +2125,7 @@ function LoginFlow({ onLogin }) {
                 className="rounded-xl p-4 mb-4 max-h-64 overflow-y-auto whitespace-pre-wrap text-[14px] leading-relaxed"
                 style={{ border: `1.5px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}
               >
-                {getRegulationsText(lang)}
+                {getRegulationsText(lang, rulesText)}
               </div>
 
               <label className="flex items-start gap-2 mb-4 text-sm" style={{ color: COLORS.ink }}>
@@ -2241,12 +2270,13 @@ function RulesView({ lang, t, traineeId, dk, traineeName, group }) {
   const [showHandbook, setShowHandbook] = useState(false);
   const [rulesLang, setRulesLang] = useState(RULES_TEXT[lang] ? lang : "fr");
   const [ack, setAck] = useState(undefined);
+  const rulesText = useRulesText();
   useEffect(() => {
     if (!traineeId || !dk) return;
     (async () => setAck(await loadSignedRulesAck(traineeId, dk)))();
   }, [traineeId, dk]);
 
-  const sections = [{ heading: t("rulesHeading"), body: getRegulationsText(rulesLang) }];
+  const sections = [{ heading: t("rulesHeading"), body: getRegulationsText(rulesLang, rulesText) }];
 
   if (showHandbook) {
     return <HandbookViewer t={t} onClose={() => setShowHandbook(false)} />;
@@ -2290,7 +2320,7 @@ function RulesView({ lang, t, traineeId, dk, traineeName, group }) {
       )}
 
       <Card className="p-4 mt-4">
-        <label className="block"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("rulesLanguageLabel")}</span><select value={rulesLang} onChange={(event) => { setRulesLang(event.target.value); }} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{Object.keys(RULES_TEXT).map((code) => <option key={code} value={code}>{LANGS.find((item) => item.code === code)?.label || code}</option>)}</select></label>
+        <label className="block"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("rulesLanguageLabel")}</span><select value={rulesLang} onChange={(event) => { setRulesLang(event.target.value); }} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{Object.keys(rulesText).map((code) => <option key={code} value={code}>{LANGS.find((item) => item.code === code)?.label || code}</option>)}</select></label>
       </Card>
       <SpeechRules sections={sections} lang={rulesLang} t={t} />
     </div>
@@ -2302,10 +2332,7 @@ function SpeechRules({ sections, lang, t }) {
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [playing, setPlaying] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [audioUrl, setAudioUrl] = useState("");
-  const [error, setError] = useState(false);
-  const audioRef = useRef(null);
+  const [voices, setVoices] = useState([]);
   const sequence = useMemo(() => sections.flatMap((section, sectionIndex) => {
     const parts = [section.body, ...(section.numbered || []), ...(section.items || [])].filter(Boolean);
     return parts.flatMap((part, partIndex) => part.split(/(?<=[.!?؟。])\s+/).filter(Boolean).map((text) => ({ sectionIndex, partIndex, text })));
@@ -2316,94 +2343,102 @@ function SpeechRules({ sections, lang, t }) {
     setCurrentIndex(-1);
     setPlaying(false);
     setPaused(false);
-    setAudioUrl("");
-    audioRef.current?.pause();
+    window.speechSynthesis?.cancel();
   }, [lang]);
 
   useEffect(() => {
+    if (typeof window === "undefined" || !window.speechSynthesis) return undefined;
+    const loadVoices = () => setVoices(window.speechSynthesis.getVoices());
+    loadVoices();
+    window.speechSynthesis.addEventListener("voiceschanged", loadVoices);
     return () => {
-      audioRef.current?.pause();
+      window.speechSynthesis.removeEventListener("voiceschanged", loadVoices);
+      window.speechSynthesis.cancel();
     };
   }, []);
 
-  async function start() {
-    if (!sequence.length || loading) return;
-    audioRef.current?.pause();
-    setError(false);
-    setLoading(true);
-    setCurrentIndex(0);
-    try {
-      const response = await fetch("/api/tts", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({ text: sequence.map((item) => item.text).join("\n\n"), language: speechLang }),
-      });
-      if (!response.ok) throw new Error("TTS request failed");
-      const blob = await response.blob();
-      const nextUrl = URL.createObjectURL(blob);
-      setAudioUrl(nextUrl);
-      setPlaying(true);
-      setPaused(false);
-    } catch {
-      setError(true);
+  useEffect(() => {
+    if (!playing || paused || currentIndex < 0 || currentIndex >= sequence.length) return undefined;
+    if (typeof window === "undefined" || !window.speechSynthesis) return undefined;
+    const utterance = new SpeechSynthesisUtterance(sequence[currentIndex].text);
+    const voice = selectSpeechVoice(voices, speechLang);
+    if (voice) utterance.voice = voice;
+    utterance.lang = voice?.lang || "fr-FR";
+    utterance.rate = speechLang === "ar" ? 0.84 : 0.9;
+    utterance.onend = () => setCurrentIndex((index) => {
+      if (index + 1 >= sequence.length) {
+        setPlaying(false);
+        return -1;
+      }
+      return index + 1;
+    });
+    utterance.onerror = () => {
       setPlaying(false);
+      setPaused(false);
       setCurrentIndex(-1);
-    } finally {
-      setLoading(false);
-    }
-  }
+    };
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
+    return () => window.speechSynthesis.cancel();
+  }, [currentIndex, playing, paused, speechLang, sequence, voices]);
 
-  function handleTimeUpdate() {
-    const audio = audioRef.current;
-    if (!audio || !audio.duration || !sequence.length) return;
-    const progress = Math.min(audio.currentTime / audio.duration, 0.999999);
-    const index = Math.floor(progress * sequence.length);
-    setCurrentIndex(index);
-  }
-
-  function handleEnded() {
-    setPlaying(false);
+  function start() {
+    if (!sequence.length) return;
+    window.speechSynthesis?.cancel();
     setPaused(false);
-    setCurrentIndex(-1);
+    setPlaying(true);
+    setCurrentIndex(0);
   }
 
   function pause() {
     if (!playing) return;
-    audioRef.current?.pause();
+    window.speechSynthesis?.pause();
     setPaused(true);
   }
 
   function resume() {
-    if (!audioRef.current || !audioUrl) return start();
-    audioRef.current.play().catch(() => setError(true));
+    if (!playing) return start();
+    window.speechSynthesis?.resume();
     setPaused(false);
   }
 
   function stop() {
-    audioRef.current?.pause();
-    if (audioUrl) URL.revokeObjectURL(audioUrl);
-    setAudioUrl("");
-    setPaused(false);
+    window.speechSynthesis?.cancel();
     setPlaying(false);
+    setPaused(false);
     setCurrentIndex(-1);
   }
 
   const activeText = currentIndex >= 0 ? sequence[currentIndex]?.text : "";
   return <>
-    <audio ref={audioRef} src={audioUrl || undefined} onTimeUpdate={handleTimeUpdate} onEnded={handleEnded} onPlay={() => setPlaying(true)} onPause={() => { if (audioRef.current?.ended) return; setPaused(true); }} preload="auto" />
     <Card className="p-4 mt-4">
       <div className="flex flex-col sm:flex-row sm:items-end gap-3">
         <label className="flex-1"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("speechLanguageLabel")}</span><select value={speechLang} onChange={(event) => { stop(); setSpeechLang(event.target.value); }} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{LANGS.map((item) => <option key={item.code} value={item.code}>{item.label}</option>)}</select></label>
         <div className="flex gap-2 flex-wrap">
-          <Button color={COLORS.rules} onClick={start} disabled={loading || !sequence.length}><Volume2 size={17} /> {loading ? t("loadingMsg") : t("listenRules")}</Button>
+          <Button color={COLORS.rules} onClick={start} disabled={!sequence.length}><Volume2 size={17} /> {t("listenRules")}</Button>
           <button type="button" onClick={paused ? resume : pause} disabled={!playing} className="p-3 rounded-xl" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink }} aria-label={paused ? t("speechResume") : t("speechPause")}>{paused ? <Play size={18} /> : <Pause size={18} />}</button>
           <button type="button" onClick={stop} disabled={!playing} className="p-3 rounded-xl" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink }} aria-label={t("speechStop")}><Square size={17} /></button>
         </div>
       </div>
-      {error && <p className="text-xs mt-2" style={{ color: COLORS.danger }}>{t("speechUnavailable")}</p>}
     </Card>
     <HandbookSections sections={sections} t={t} activeText={activeText} />
   </>;
+}
+
+function speechLocale(lang) {
+  return { fr: "fr-FR", ar: "ar-SA", en: "en-US", tr: "tr-TR", pt: "pt-PT", es: "es-ES", prs: "prs-AF", fa: "fa-IR", ru: "ru-RU", uk: "uk-UA", ku: "ku-TR", zh: "zh-CN", krl: "ku-TR" }[lang] || "fr-FR";
+}
+
+function selectSpeechVoice(voices, lang) {
+  const requestedLocale = speechLocale(lang).toLowerCase();
+  const requestedLanguage = requestedLocale.split("-")[0];
+  const frenchVoices = voices.filter((voice) => voice.lang.toLowerCase().split("-")[0] === "fr");
+  return voices.find((voice) => voice.lang.toLowerCase() === requestedLocale)
+    || voices.find((voice) => voice.lang.toLowerCase().split("-")[0] === requestedLanguage)
+    || frenchVoices.find((voice) => /natural|neural|premium|enhanced|online|google|microsoft|siri/i.test(voice.name))
+    || frenchVoices[0]
+    || voices[0]
+    || null;
 }
 
 function HandbookSections({ sections, t, activeText = "" }) {
@@ -3467,7 +3502,8 @@ function TraineeRulesAcceptanceView({ session, t, onComplete }) {
   const [signatureDataUrl, setSignatureDataUrl] = useState(null);
   const [error, setError] = useState("");
   const signaturePadRef = useRef(null);
-  const sections = [{ heading: t("rulesHeading"), body: getRegulationsText(rulesLang) }];
+  const rulesText = useRulesText();
+  const sections = [{ heading: t("rulesHeading"), body: getRegulationsText(rulesLang, rulesText) }];
 
   async function handleAccept() {
     if (!checked || !signatureDataUrl) {
@@ -3478,7 +3514,7 @@ function TraineeRulesAcceptanceView({ session, t, onComplete }) {
       lang: rulesLang,
       readLang: rulesLang,
       signedLang: rulesLang,
-      rulesText: getRegulationsText(rulesLang),
+      rulesText: getRegulationsText(rulesLang, rulesText),
       signatureDataUrl,
       signedAt: Date.now(),
     });
@@ -3490,8 +3526,8 @@ function TraineeRulesAcceptanceView({ session, t, onComplete }) {
       <Card className="p-5">
         <h1 className="text-xl font-semibold mb-2" style={{ color: COLORS.ink }}>{t("rulesAcceptanceRequiredHeading")}</h1>
         <p className="text-sm mb-4" style={{ color: COLORS.inkSoft }}>{t("rulesAcceptanceRequiredMsg")}</p>
-        <label className="block mb-4"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("rulesLanguageLabel")}</span><select value={rulesLang} onChange={(event) => setRulesLang(event.target.value)} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{Object.keys(RULES_TEXT).map((code) => <option key={code} value={code}>{LANGS.find((item) => item.code === code)?.label || code}</option>)}</select></label>
-        <div className="rounded-xl p-4 mb-4 max-h-[45vh] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed" style={{ border: `1px solid ${COLORS.border}`, backgroundColor: "#fff", color: COLORS.ink }}>{getRegulationsText(rulesLang)}</div>
+        <label className="block mb-4"><span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("rulesLanguageLabel")}</span><select value={rulesLang} onChange={(event) => setRulesLang(event.target.value)} className="w-full px-3 py-2.5 rounded-xl outline-none" style={{ border: `1px solid ${COLORS.border}`, color: COLORS.ink, backgroundColor: "#fff" }}>{Object.keys(rulesText).map((code) => <option key={code} value={code}>{LANGS.find((item) => item.code === code)?.label || code}</option>)}</select></label>
+        <div className="rounded-xl p-4 mb-4 max-h-[45vh] overflow-y-auto whitespace-pre-wrap text-sm leading-relaxed" style={{ border: `1px solid ${COLORS.border}`, backgroundColor: "#fff", color: COLORS.ink }}>{getRegulationsText(rulesLang, rulesText)}</div>
         <SpeechRules sections={sections} lang={rulesLang} t={t} />
         <label className="flex items-start gap-2 mt-5 mb-4 text-sm" style={{ color: COLORS.ink }}><input type="checkbox" className="mt-1" checked={checked} onChange={(event) => setChecked(event.target.checked)} /><span>{t("acceptRulesLabel")}</span></label>
         <span className="block mb-1.5 text-sm font-medium" style={{ color: COLORS.inkSoft }}>{t("signatureLabel")}</span>
